@@ -205,9 +205,10 @@ git_init: ## ADD ssh pub key to git, this will be simple for the future using, a
 	@git push -u origin $(BRANCH)
 
 git_push: ##Git add . and commit and push to branch, add tag
-	@git add .
-	@git commit -m "$(MESSAGE) with version $(VERSION)"
-	@git push -u origin $(BRANCH)
+	@git status
+	- @git add .
+	- @git commit -m "$(MESSAGE) with version $(VERSION)"
+	- @git push -u origin $(BRANCH)
 
 save_version: check_version ## Save a new version with increment param ARGUMENT=[1.0.0:major/feature/bug]
 	$(shell echo $(NEWVERSION) > $(FILE))
@@ -225,7 +226,7 @@ clean_version: ## This will delete our version file, will set version to DEFVERS
 	@echo the version file was deleted from app directory
 
 tag: ## This will tag our git vith the version 
-	@git checkout integration
+	@git checkout $(BRANCH)
 	@echo $(VERSION)
 	@git tag $(VERSION)
 	@git push --tags
