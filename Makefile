@@ -186,10 +186,10 @@ delete_app: ## THIS will remove our startproject with all data
 	@echo "the app $(APP_NAME) was deleted and also the venv $(VENV)"
 
 git_init: ## ADD ssh pub key to git, this will be simple for the future using, and create an app in github
-	# @if [ -z $(APP_NAME) ]; then\
-	# 	echo "The app name not configured";\
-	# 	exit 1;\
-	# fi
+	@if [ -z $(APP_NAME) ]; then\
+		echo "The app name not configured";\
+		exit 1;\
+	fi
 
 	@if [ -z $(GITSSH) ]; then\
 		echo "The git ssh repo not configured";\
