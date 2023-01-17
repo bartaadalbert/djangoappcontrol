@@ -1,0 +1,13 @@
+.gitignore
+.dockerignore
+.env*
+.tox*
+venv*
+*.sh
+*.stub
+*.js
+gitignorestatic
+Makefile
+requirements.txt
+version.txt
+
