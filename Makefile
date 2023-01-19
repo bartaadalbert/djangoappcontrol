@@ -170,16 +170,24 @@ create_venv: ## Create venv with Django startproject, and delete venv if exist
 		echo "$(APP_NAME)/.env*" >> .gitignore;\
 		source $(VENV)/bin/activate && django-admin startproject $(APP_NAME) && cd $(APP_NAME) && python3 manage.py startapp $(START_APP_NAME);\
 		echo "The app folder $(APP_NAME) created with startapp $(START_APP_NAME) successfully";\
+		sleep 5;\
+		if [[ -d $(APP_NAME)/$(START_APP_NAME) ]]; then\
+			$(SCRIPT_DJ_SETTINGS) $(APP_NAME);\
+			$(SCRIPT_DJ_URLS) $(APP_NAME) $(START_APP_NAME);\
+			echo "The django settings was changed with $(APP_NAME)";\
+			make add_installed_apps $(APP_NAME) $(START_APP_NAME);\
+		fi\
 	else\
 		echo "The app folder $(APP_NAME) exist, nothing to do";\
 	fi
-	@sleep 5
+
+app_settings: ## Change the existed app settings from settings dynamic
 	@if [[ -d $(APP_NAME)/$(START_APP_NAME) ]]; then\
 		$(SCRIPT_DJ_SETTINGS) $(APP_NAME);\
-		$(SCRIPT_DJ_URLS) $(APP_NAME) $(START_APP_NAME);\
 		echo "The django settings was changed with $(APP_NAME)";\
 		make add_installed_apps $(APP_NAME) $(START_APP_NAME);\
 	fi
+
 delete_app: ## THIS will remove our startproject with all data
 	@rm -rf $(APP_NAME)
 	@rm -rf $(VENV)
@@ -245,9 +253,9 @@ bash_executable: ## Make all .sh file executable for our app
 	@echo the bash files was made executable
 
 activate: ##Activate the venv
-	source $(VENV)/bin/activate
+	- source $(VENV)/bin/activate
 
-check:
+check: activate
 	$(echo -e "$(MESSAGE)")
 	@git init
 	
