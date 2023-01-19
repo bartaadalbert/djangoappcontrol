@@ -176,7 +176,7 @@ create_venv: ## Create venv with Django startproject, and delete venv if exist
 			$(SCRIPT_DJ_URLS) $(APP_NAME) $(START_APP_NAME);\
 			echo "The django settings was changed with $(APP_NAME)";\
 			make add_installed_apps $(APP_NAME) $(START_APP_NAME);\
-		fi\
+		fi
 	else\
 		echo "The app folder $(APP_NAME) exist, nothing to do";\
 	fi
