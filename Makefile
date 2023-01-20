@@ -6,7 +6,6 @@ YELLOW = '\033[1;33m'
 RED = '\033[0;31m'
 GREEN = '\033[0;32m' 
 BLUE = '\033[0;34m'
-MODIFY := 0
 
 #GET ADD VERSION
 FILE := version.txt
@@ -141,10 +140,10 @@ context: ##Get available docker context s
 	@docker context ls
 
 images: ## Get all docker images
-	@docker images
+	- @docker images
 
 ps: ## Get all runing docker containers
-	@docker ps -a 
+	- @docker ps -a 
 
 change_context: context ## Change the docker context to other server
 	@docker context use $(DOCKER_CONTEXT)
@@ -171,13 +170,11 @@ create_venv: ## Create venv with Django startproject, and delete venv if exist
 		echo "$(APP_NAME)/.env*" >> .gitignore;\
 		source $(VENV)/bin/activate && django-admin startproject $(APP_NAME) && cd $(APP_NAME) && python3 manage.py startapp $(START_APP_NAME);\
 		echo "The app folder $(APP_NAME) created with startapp $(START_APP_NAME) successfully";\
-		sleep 5;\
-		$(eval MODIFY=1)
 	else\
 		echo "The app folder $(APP_NAME) exist, nothing to do";\
 	fi
 
-	if [[ -d $(APP_NAME)/$(START_APP_NAME) ]] && [[ $(MODIFY) == 1 ]]; then\
+	@if [[ -d $(APP_NAME)/$(START_APP_NAME) ]]; then\
 		$(SCRIPT_DJ_SETTINGS) $(APP_NAME);\
 		$(SCRIPT_DJ_URLS) $(APP_NAME) $(START_APP_NAME);\
 		echo "The django settings was changed with $(APP_NAME)";\
