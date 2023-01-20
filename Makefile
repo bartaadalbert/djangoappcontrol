@@ -162,7 +162,7 @@ create_venv: ## Create venv with Django startproject, and delete venv if exist
 	@rm -rf $(VENV)
 	@python3 -m venv $(VENV)
 	@source $(VENV)/bin/activate && python3 -m pip install --upgrade pip && pip install --upgrade -r requirements.txt
-	settings_change:=0
+	settings_change=0
 	@if [[ ! -d $(APP_NAME) ]]; then\
 		cp gitignorestatic .gitignore;\
 		echo "$(APP_NAME)/$(APP_NAME)/__pycache__" >> .gitignore;\
