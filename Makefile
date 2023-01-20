@@ -6,7 +6,7 @@ YELLOW = '\033[1;33m'
 RED = '\033[0;31m'
 GREEN = '\033[0;32m' 
 BLUE = '\033[0;34m'
-MODIFY = 0
+MODIFY := 0
 
 #GET ADD VERSION
 FILE := version.txt
@@ -172,7 +172,7 @@ create_venv: ## Create venv with Django startproject, and delete venv if exist
 		source $(VENV)/bin/activate && django-admin startproject $(APP_NAME) && cd $(APP_NAME) && python3 manage.py startapp $(START_APP_NAME);\
 		echo "The app folder $(APP_NAME) created with startapp $(START_APP_NAME) successfully";\
 		sleep 5;\
-		$(MODIFY)=1;\
+		$(eval MODIFY=1)
 	else\
 		echo "The app folder $(APP_NAME) exist, nothing to do";\
 	fi
@@ -259,8 +259,9 @@ activate: ##Activate the venv
 	- source $(VENV)/bin/activate
 
 check:
-	variable=0
-	echo $$(variable)
+	echo $(MODIFY)
+	$(eval MODIFY=qwerty)
+	echo $(MODIFY)
 	
 
 build: ## Build the docker image
