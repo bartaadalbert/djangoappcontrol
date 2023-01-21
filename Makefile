@@ -158,6 +158,11 @@ add_installed_apps: ## Add in django settings installed apps new app
 	$(shell $(SCRIPT_DJ_INSTALLED_APPS) $(APP_NAME) $(START_APP_NAME))
 	@echo The app was added to installed app with name $(START_APP_NAME)
 
+just_venv: ## Create just venv
+	@rm -rf $(VENV)
+	@python3 -m venv $(VENV)
+	@source $(VENV)/bin/activate && python3 -m pip install --upgrade pip && pip install --upgrade -r requirements.txt
+
 create_venv: ## Create venv with Django startproject, and delete venv if exist
 	@rm -rf $(VENV)
 	@python3 -m venv $(VENV)
