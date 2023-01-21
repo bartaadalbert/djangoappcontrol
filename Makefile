@@ -31,9 +31,9 @@ ifeq ($(DEV_MODE),1)
 APP_NAME := djappcontrol
 START_APP_NAME := devcontrol
 REMOTE_HOST := jsonsmile.com## OR other IP hostname ....
-DOCKERFILE := "${DOCKER_FILE_DIR}/dev.Dockerfile"
-COMPOSEFILE := "${DOCKER_FILE_DIR}/dev.docker-compose.yml"
-DOCKER_APP_ENV := "${DOCKER_FILE_DIR}/.env.dev"
+DOCKERFILE := ${DOCKER_FILE_DIR}/dev.Dockerfile
+COMPOSEFILE := ${DOCKER_FILE_DIR}/dev.docker-compose.yml
+DOCKER_APP_ENV := ${DOCKER_FILE_DIR}/.env.dev
 DOCKER_CONTEXT := jsm_adalbert
 CONTEXT_DESCRIPTION := develop
 CONTEXT_HOST := host=ssh://adalbert@jsonsmile.com
@@ -48,9 +48,9 @@ else
 APP_NAME := ipinfo
 START_APP_NAME := control
 REMOTE_HOST := jsonsmile.com
-DOCKERFILE := "${DOCKER_FILE_DIR}/prod.Dockerfile"
-COMPOSEFILE := "${DOCKER_FILE_DIR}/prod.docker-compose.yml"
-DOCKER_APP_ENV := "${DOCKER_FILE_DIR}/.env.prod"
+DOCKERFILE := ${DOCKER_FILE_DIR}/prod.Dockerfile
+COMPOSEFILE := ${DOCKER_FILE_DIR}/prod.docker-compose.yml
+DOCKER_APP_ENV := ${DOCKER_FILE_DIR}/.env.prod
 DOCKER_CONTEXT := jsm_root
 CONTEXT_DESCRIPTION := production
 CONTEXT_HOST := host=ssh://root@jsonsmile.com
@@ -93,6 +93,15 @@ help: ## This help.
 #     @$(call my_func,"example.com",8000)
 
 preconfig: ## Add all needed files
+	@if [[ -d $(APP_NAME) ]]; then\ 
+		mkdir $(APP_NAME)/$(DOCKER_FILE_DIR);\
+		touch $(APP_NAME)/$(DOCKERFILE);\
+		touch $(APP_NAME)/$(COMPOSEFILE);\
+		touch $(APP_NAME)/$(DOCKER_APP_ENV);\
+	else\
+		echo "The app folder $(APP_NAME) not exist, cant add configs";\
+	fi
+
 	
 .gitignore: ## Create gitignore dinamic
 	@cp gitignorestatic .gitignore
