@@ -1,6 +1,7 @@
 #!/bin/bash
 #usage APP NAME
 APP_NAME=$1
+SUBDOMAIN=${2:-"http://server.local"}
 RED='\033[0;31m'
 #LINUX
 SED=$(which sed)
@@ -27,6 +28,7 @@ fi
 
 cp "$PWD/djangosettings.stub" $CONFIG
 $SED -i "s/{{APP_NAME}}/$APP_NAME/g" $CONFIG
+$SED -i "s/{{SUBDOMAIN}}/$SUBDOMAIN/g" $CONFIG
 mv $CONFIG "$APP_NAME/$APP_NAME/settings.py"
 sudo chmod 644 "$APP_NAME/$APP_NAME/settings.py"
 

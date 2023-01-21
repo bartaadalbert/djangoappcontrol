@@ -175,7 +175,7 @@ create_venv: ## Create venv with Django startproject, and delete venv if exist
 	fi
 
 	@if [[ -d $(APP_NAME)/$(START_APP_NAME) ]]; then\
-		$(SCRIPT_DJ_SETTINGS) $(APP_NAME);\
+		$(SCRIPT_DJ_SETTINGS) $(APP_NAME) $(SUBDOMAIN);\
 		$(SCRIPT_DJ_URLS) $(APP_NAME) $(START_APP_NAME);\
 		echo "The django settings was changed with $(APP_NAME)";\
 		make add_installed_apps $(APP_NAME) $(START_APP_NAME);\
@@ -183,7 +183,7 @@ create_venv: ## Create venv with Django startproject, and delete venv if exist
 
 app_settings: ## Change the existed app settings from settings dynamic
 	@if [[ -d $(APP_NAME)/$(START_APP_NAME) ]]; then\
-		$(SCRIPT_DJ_SETTINGS) $(APP_NAME);\
+		$(SCRIPT_DJ_SETTINGS) $(APP_NAME) $(SUBDOMAIN);\
 		echo "The django settings was changed with $(APP_NAME)";\
 		make add_installed_apps $(APP_NAME) $(START_APP_NAME);\
 	fi
