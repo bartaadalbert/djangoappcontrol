@@ -6,6 +6,7 @@ YELLOW = '\033[1;33m'
 RED = '\033[0;31m'
 GREEN = '\033[0;32m' 
 BLUE = '\033[0;34m'
+STR_LENGTH := 64
 
 #GET ADD VERSION
 FILE := version.txt
@@ -273,6 +274,10 @@ check:
 	echo $(MODIFY)
 	$(eval MODIFY=qwerty)
 	echo $(MODIFY)
+
+rand:
+	$(shell LC_ALL=C tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' </dev/urandom | head -c ${STR_LENGTH} ; echo)
+	# $(shell tr -dc A-Za-z0-9 </dev/urandom | head -c ${STR_LENGTH} ; echo '')
 	
 
 build: ## Build the docker image
