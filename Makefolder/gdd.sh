@@ -7,16 +7,19 @@ SUB_DOMAIN=$2
 GODADDY_API_KEY=GODADDY_API_KEY
 GODADDY_API_SECRET=GODADDY_API_SECRET
 CURL_EXTION=${3:-"PUT"}
+# Get IP Address
+# DEF_IP=`dig $DOMAIN +short @resolver1.opendns.com`
 
+IP=${4:-`dig $DOMAIN +short @resolver1.opendns.com`}
+echo $IP
+exit 1
 if [ -z $1 ] || [ -z $2 ]; then
 	echo -e "${RED}Domain or subdomain not given";
 	exit 1;
 fi
 
 if [ $CURL_EXTION == "PUT" ] || [ $CURL_EXTION == "DELETE" ]; then 
-	# Get IP Address
-	IP=`dig $DOMAIN +short @resolver1.opendns.com`
-
+	
 	# Create DNS A Record
 	curl -X $CURL_EXTION \
 	-H 'Content-Type: application/json' \

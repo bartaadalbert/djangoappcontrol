@@ -20,12 +20,12 @@ VARIABLE := $(shell cat ${FILE})
 DEFVERSION:= 1.0.0
 VERSION := $(if $(VARIABLE),$(VARIABLE),$(DEFVERSION))
 SCRIPT_VERSION:= $(DEFF_MAKER)version.sh
-SCRIPT_GDD := "./gdd.sh"
+SCRIPT_GDD := $(DEFF_MAKER)gdd.sh
 SCRIPT_NGINX := $(DEFF_MAKER)nginxgenerator.sh
-SCRIPT_PM2 := "./pm2creator.sh"
-SCRIPT_GIT := "./gitrepo.sh"
-SCRIPT_DJ_SETTINGS := ./djsettings.sh
-SCRIPT_DJ_URLS := "./djurls.sh"
+SCRIPT_PM2 := $(DEFF_MAKER)pm2creator.sh
+SCRIPT_GIT := $(DEFF_MAKER)gitrepo.sh
+SCRIPT_DJ_SETTINGS := $(DEFF_MAKER)djsettings.sh
+SCRIPT_DJ_URLS := $(DEFF_MAKER)djurls.sh
 SCRIPT_DJ_INSTALLED_APPS := $(DEFF_MAKER)djapp.sh
 ARGUMENT:= feature #can use major/feature/bug
 NEWVERSION:=$(shell $(SCRIPT_VERSION) $(VERSION) $(ARGUMENT))
@@ -76,6 +76,7 @@ GITSSH := git@github.com:bartaadalbert/$(APP_NAME).git
 BRANCH := main
 NGINX_CONF := $(DEFF_MAKER)$(APP_NAME).$(DOMAIN).conf
 SUBDOMAIN := $(APP_NAME).$(DOMAIN)
+SUBDOMAIN_CSRF := "https:\/\/$(APP_NAME).$(DOMAIN)"
 SSH_SERVER := $(REMOTE_USER)@$(REMOTE_HOST)
 PROXY_PASS := http:\/\/127.0.0.1:$(FINAL_PORT)
 PM2_CONFIG := $(APP_NAME).config.js
@@ -125,12 +126,12 @@ preconfig: ## Add all needed files
 		touch $(APP_NAME)/$(COMPOSEFILE);\
 		touch $(APP_NAME)/$(DOCKER_APP_ENV);\
 	else\
-		echo "The app folder $(APP_NAME) not exist, cant add configs";\
+		echo $(RED)"The app folder $(APP_NAME) not exist, cant add configs";\
 	fi
 
 	
 .gitignore: ## Create gitignore dinamic
-	@cp gitignorestatic .gitignore
+	@cp $(DEFF_MAKER)gitignorestatic .gitignore
 
 create_repo: checker ## Cretae github repository private whitout template
 	$(shell $(SCRIPT_GIT) $(APP_NAME))
@@ -147,7 +148,7 @@ create_nginx: ## Create an nginx config with proxypass and servername
 create_ssl: ## Create ssl with certbot for our nginx conf in our server
 	@if [ ! -f $(NGINX_CONF) ]; then\
 		printf $(_DANGER) "The NGINX conf not exist, CREATE IT WITH: make create_nginx" ;\
-		echo  $(YELLOW)"WE CAN CREATE THE CONFIG FILE";\
+		echo  $(YELLOW)"WE CAN CREATE THE CONFIG FILE NOW";\
 		make checker;\
 		make create_nginx;\
 	fi
@@ -193,12 +194,12 @@ change_context: context ## Change the docker context to other server
 	@echo $(YELLOW)The Docker context changed to $(DOCKER_CONTEXT)
 
 
-create_context: ## Create new server docker context
+create_context: checker## Create new server docker context
 	@docker context create $(DOCKER_CONTEXT) --description $(CONTEXT_DESCRIPTION) --docker $(CONTEXT_HOST)
 	@echo $(BLUE)The $(DOCKER_CONTEXT) was created at $(CONTEXT_HOST)
 
 
-delete_context: ## Delete the context
+delete_context: checker ## Delete the context
 	@docker context rm $(DOCKER_CONTEXT)
 	@echo $(RED)The $(DOCKER_CONTEXT) was deleted
 
@@ -222,38 +223,38 @@ create_venv: checker## Create venv with Django startproject, and delete venv if 
 		echo "$(APP_NAME)/$(APP_NAME)/settings.py" >> .gitignore;\
 		echo "$(APP_NAME)/.env*" >> .gitignore;\
 		source $(VENV)/bin/activate && django-admin startproject $(APP_NAME) && cd $(APP_NAME) && python3 manage.py startapp $(START_APP_NAME);\
-		echo "The app folder $(APP_NAME) created with startapp $(START_APP_NAME) successfully";\
+		echo $(BLUE)"The app folder $(APP_NAME) created with startapp $(START_APP_NAME) successfully";\
 	else\
-		echo "The app folder $(APP_NAME) exist, nothing to do";\
+		echo $(YELLOW)"The app folder $(APP_NAME) exist, nothing to do";\
 	fi
 
 	@if [[ -d $(APP_NAME)/$(START_APP_NAME) ]]; then\
-		$(SCRIPT_DJ_SETTINGS) $(APP_NAME) $(SUBDOMAIN);\
+		$(SCRIPT_DJ_SETTINGS) $(APP_NAME) $(SUBDOMAIN_CSRF);\
 		$(SCRIPT_DJ_URLS) $(APP_NAME) $(START_APP_NAME);\
-		echo "The django settings was changed with $(APP_NAME)";\
+		echo $(YELLOW)"The django settings was changed with $(APP_NAME)";\
 		make add_installed_apps $(APP_NAME) $(START_APP_NAME);\
 	fi
 
 app_settings: ## Change the existed app settings from settings dynamic
 	@if [[ -d $(APP_NAME)/$(START_APP_NAME) ]]; then\
-		$(SCRIPT_DJ_SETTINGS) $(APP_NAME) $(SUBDOMAIN);\
-		echo "The django settings was changed with $(APP_NAME)";\
+		$(SCRIPT_DJ_SETTINGS) $(APP_NAME) $(SUBDOMAIN_CSRF);\
+		echo $(YELLOW)"The django settings was changed with $(APP_NAME)";\
 		make add_installed_apps $(APP_NAME) $(START_APP_NAME);\
 	fi
 
-delete_app: ## THIS will remove our startproject with all data
+delete_app: checker## THIS will remove our startproject with all data
 	@rm -rf $(APP_NAME)
 	@rm -rf $(VENV)
-	@echo "the app $(APP_NAME) was deleted and also the venv $(VENV)"
+	@echo "$(YELLOW)the app $(APP_NAME) was deleted and also the venv $(VENV)"
 
 git_init: ## ADD ssh pub key to git, this will be simple for the future using, and create an app in github
 	@if [ -z $(APP_NAME) ]; then\
-		echo "The app name not configured";\
+		echo $(RED)"The app name not configured";\
 		exit 1;\
 	fi
 
 	@if [ -z $(GITSSH) ]; then\
-		echo "The git ssh repo not configured";\
+		echo $(RED)"The git ssh repo not configured";\
 		exit 1;\
 	fi
 
@@ -273,18 +274,18 @@ git_push: ##Git add . and commit and push to branch, add tag
 
 save_version: check_version ## Save a new version with increment param ARGUMENT=[1.0.0:major/feature/bug]
 	$(shell echo $(NEWVERSION) > $(FILE))
-	@echo new version: $(NEWVERSION)
+	@echo $(GREEN)new version: $(NEWVERSION)
 
 check_version: ## Get the actual version
-	@echo current version: $(VERSION)
+	@echo $(BLUE)current version: $(VERSION)
 
 reset_version: clean_version ## This will generate new file with DEFVERSION or any VERSION
 	$(shell echo $(DEFVERSION) > $(FILE))
-	@echo reset version: $(DEFVERSION)
+	@echo $(RED)reset version: $(DEFVERSION)
 
 clean_version: checker## This will delete our version file, will set version to DEFVERSION 1.0.0 or what you give
 	$(shell rm $(FILE))
-	@echo the version file was deleted from app directory
+	@echo $(RED)the version file was deleted from app directory
 
 tag: ## This will tag our git vith the version 
 	@git checkout $(BRANCH)
@@ -294,21 +295,22 @@ tag: ## This will tag our git vith the version
 
 create_pm2: ## Add pm2 config js to app folder
 	@if [[ ! -d $(APP_NAME) ]]; then\
-		echo "Cant add pm2 config if APP not created before";\
+		echo $(RED)"Cant add pm2 config if APP not created before";\
 		exit 0;\
 	fi
 	$(shell $(SCRIPT_PM2) $(APP_NAME) "$(FINAL_PORT)")
-	@cp $(CUR_DIR)/$(PM2_CONFIG) $(APP_NAME)
-	@echo The config js was created and copied to APP folder
+	@cp $(CUR_DIR)/$(DEFF_MAKER)$(PM2_CONFIG) $(APP_NAME)
+	@echo $(BLUE)The config js was created and copied to APP folder
 
 bash_executable: ## Make all .sh file executable for our app
-	@sudo chmod u+x *.sh
-	@echo the bash files was made executable
+	@sudo chmod u+x $(DEFF_MAKER)*.sh
+	@echo $(GREEN)the bash files was made executable
 
 activate: ##Activate the venv
 	- source $(VENV)/bin/activate
 
 check:
+	echo $(SUBDOMAIN_CSRF)
 	echo $(NGINX_CONF)
 	echo $(MODIFY)
 	$(eval MODIFY=qwerty)

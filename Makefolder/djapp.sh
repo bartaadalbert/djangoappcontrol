@@ -1,3 +1,4 @@
+#!/bin/bash
 #LINUX
 # SED=$(which sed)
 #MACOS, brew install gnu-sed
@@ -29,19 +30,21 @@ is_app_in_django_settings() {
 add_app2django_settings() {
     is_app_in_django_settings $2
     if [ $? -ne 0 ]; then
-        echo "${RED}Info. The app $2 is not in the django project settings file $SETTINGS_FILE. Adding..."
+        echo "The app $2 is not in the django project settings file $SETTINGS_FILE. Adding..."
         $SED -i -e '1h;2,$H;$!d;g' -re "s/(INSTALLED_APPS\s?=\s?\[[\n '._a-zA-Z,]*)/\1    '$2',\n/g" $SETTINGS_FILE
         # checking that app $2 successfully added to django project settings file
         is_app_in_django_settings $2
         if [ $? -ne 0 ]; then
             # echo "Error. Could not add the app '$2' to the django project settings file '$SETTINGS_FILE'. Add it manually, then run this script again."
-            echo "${GREEN}Info. The app '$2' was successfully added to the django settings file '$SETTINGS_FILE'."
+            echo "The app '$2' was successfully added to the django settings file '$SETTINGS_FILE'."
             exit 0
         else
-            echo "${GREEN}Info. The app '$2' was successfully added to the django settings file '$SETTINGS_FILE'."
+            echo "The app '$2' was successfully added to the django settings file '$SETTINGS_FILE'."
+            exit 0
         fi
     else
-        echo "${RED}Info. The app '$2' is already in the django project settings file '$SETTINGS_FILE'"
+        echo "The app '$2' is already in the django project settings file '$SETTINGS_FILE'"
+        exit 0
     fi
 }
 

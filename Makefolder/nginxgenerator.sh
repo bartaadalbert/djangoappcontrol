@@ -1,5 +1,6 @@
 #!/bin/bash
 RED='\033[0;31m'
+DEFF_MAKER={3:-"Makefolder"}
 #LINUX
 # SED=$(which sed)
 #MACOS, brew install gnu-sed
@@ -23,14 +24,14 @@ else
 fi
 
 #Create file for checking messaging 
-CONFIG="$PWD/Makefolder/$SERVERNAME.conf"
+CONFIG="$PWD/$DEFF_MAKER/$SERVERNAME.conf"
 
 #CHECK THE UPDOWN FILE EXIST
 if [[ ! -f $CONFIG ]]; then
     touch $CONFIG
 fi
 
-cp "$PWD/Makefolder/subdomain.stub" $CONFIG
+cp "$PWD/$DEFF_MAKER/subdomain.stub" $CONFIG
 $SED -i "s/{{SERVERNAME}}/$SERVERNAME/g" $CONFIG
 $SED -i "s/{{PROXYPASS}}/$PROXYPASS/g" $CONFIG
 $SED -i "s/{{LISTEN}}/$LISTEN/g" $CONFIG
