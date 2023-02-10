@@ -9,7 +9,8 @@ RED='\033[0;31m'
 #MACOS, brew install gnu-sed
 # SED="/usr/local/opt/gnu-sed/libexec/gnubin/sed"
 case "$OSTYPE" in
-  darwin*)  SED="/usr/local/opt/gnu-sed/libexec/gnubin/sed" ;; 
+#   darwin*)  SED="/usr/local/opt/gnu-sed/libexec/gnubin/sed" ;; 
+  darwin*)  SED="/usr/local/bin/gsed" ;; 
   linux*)   SED=$(which sed) ;;
   *)        echo "unknown: $OSTYPE"; exit 1 ;;
 esac
