@@ -24,9 +24,8 @@ elif [[ "$2" == "major" ]]; then
 elif [ -z $2 ]; then
   minor=$(echo $minor + 1 | bc)
 else
-  echo -e "${YELLOW}usage: ./version.sh version_number [major/feature/bug] or empty will be incremet feature"
-  exit -1
+  echo -e "${YELLOW}USAGE: Makefolder/version.sh version_number [major/feature/bug] or empty will be incremet feature" >&2;
 fi
 
 # echo the new version number
-echo -e "${major}.${minor}.${build}"
+echo "${major}.${minor}.${build}" >&1

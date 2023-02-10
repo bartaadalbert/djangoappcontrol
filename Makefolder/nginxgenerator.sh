@@ -1,9 +1,14 @@
 #!/bin/bash
 RED='\033[0;31m'
 #LINUX
-SED=$(which sed)
+# SED=$(which sed)
 #MACOS, brew install gnu-sed
-SED="/usr/local/opt/gnu-sed/libexec/gnubin/sed"
+# SED="/usr/local/opt/gnu-sed/libexec/gnubin/sed"
+case "$OSTYPE" in
+  darwin*)  SED="/usr/local/opt/gnu-sed/libexec/gnubin/sed" ;; 
+  linux*)   SED=$(which sed) ;;
+  *)        echo "unknown: $OSTYPE"; exit 1 ;;
+esac
 PROXYPASS=${2:-"http://127.0.0.1:8008"}
 LISTEN=${3:-80}
 
@@ -18,14 +23,14 @@ else
 fi
 
 #Create file for checking messaging 
-CONFIG="$PWD/$SERVERNAME.conf"
+CONFIG="$PWD/Makefolder/$SERVERNAME.conf"
 
 #CHECK THE UPDOWN FILE EXIST
-if [[ ! -e $CONFIG ]]; then
+if [[ ! -f $CONFIG ]]; then
     touch $CONFIG
 fi
 
-cp "$PWD/subdomain.stub" $CONFIG
+cp "$PWD/Makefolder/subdomain.stub" $CONFIG
 $SED -i "s/{{SERVERNAME}}/$SERVERNAME/g" $CONFIG
 $SED -i "s/{{PROXYPASS}}/$PROXYPASS/g" $CONFIG
 $SED -i "s/{{LISTEN}}/$LISTEN/g" $CONFIG
