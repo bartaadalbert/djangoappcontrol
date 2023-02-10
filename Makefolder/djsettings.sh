@@ -38,7 +38,6 @@ fi
 cp "$PWD/$DEFF_MAKER/djangosettings.stub" $CONFIG
 $SED -i "s/{{APP_NAME}}/$APP_NAME/g" $CONFIG
 $SED -i "s/{{SUBDOMAIN}}/$SUBDOMAIN/g" $CONFIG
-sleep 1
 $SED -i "s/{{DJANGO_INSECURE_KEY}}/$DJANGO_INSECURE_KEY/g" $CONFIG
 mv $CONFIG "$APP_NAME/$APP_NAME/settings.py"
 sudo chmod 644 "$APP_NAME/$APP_NAME/settings.py"

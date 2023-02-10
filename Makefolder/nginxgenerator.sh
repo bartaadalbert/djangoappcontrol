@@ -33,9 +33,7 @@ fi
 
 cp "$PWD/$DEFF_MAKER/subdomain.stub" $CONFIG
 $SED -i "s/{{SERVERNAME}}/$SERVERNAME/g" $CONFIG
-sleep 1
 $SED -i "s/{{PROXYPASS}}/$PROXYPASS/g" $CONFIG
-sleep 1
 $SED -i "s/{{LISTEN}}/$LISTEN/g" $CONFIG
 
 

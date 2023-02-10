@@ -6,7 +6,7 @@
 #set $SETTINGS_FILE variable to full path of the your django project settings.py file
 RED='\033[0;31m'
 GREEN='\033[0;32m'
-YELLOW = '\033[1;33m'
+YELLOW='\033[1;33m'
 
 case "$OSTYPE" in
   darwin*)  GREP="/usr/local/bin/ggrep" ;; 
