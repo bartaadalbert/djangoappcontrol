@@ -25,6 +25,7 @@ fi
 
 cp "$PWD/$DEFF_MAKER/pm2.stub" $CONFIG
 $SED -i "s/{{APP_NAME}}/$APP_NAME/g" $CONFIG
+sleep 1
 $SED -i "s/{{FINAL_PORT}}/$FINAL_PORT/g" $CONFIG
 
 

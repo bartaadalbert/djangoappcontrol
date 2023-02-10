@@ -173,11 +173,11 @@ delete_nginx: checker ## Delete nginx config with conf name
 
 create_subdomain: checker## This will create a subdomain nam=app_name in our main domain
 	$(shell $(SCRIPT_GDD) $(DOMAIN) $(APP_NAME))
-	@echo "$(BLUE)subdomain was created $(APP_NAME).$(REMOTE_HOST)"
+	@echo $(BLUE)"subdomain was created $(APP_NAME).$(REMOTE_HOST)"
 
 delete_subdomain: checker ## Delete the subdomain with this app_name
 	$(shell $(SCRIPT_GDD) $(DOMAIN) $(APP_NAME) "DELETE")
-	@echo "$(YELLOW)subdomain was deleted $(APP_NAME) on $(DOMAIN)"
+	@echo $(YELLOW)"subdomain was deleted $(APP_NAME) on $(DOMAIN)"
 
 context: ##Get available docker context s
 	@docker context ls
@@ -245,7 +245,7 @@ app_settings: ## Change the existed app settings from settings dynamic
 delete_app: checker## THIS will remove our startproject with all data
 	@rm -rf $(APP_NAME)
 	@rm -rf $(VENV)
-	@echo "$(YELLOW)the app $(APP_NAME) was deleted and also the venv $(VENV)"
+	@echo $(YELLOW)"the app $(APP_NAME) was deleted and also the venv $(VENV)"
 
 git_init: ## ADD ssh pub key to git, this will be simple for the future using, and create an app in github
 	@if [ -z $(APP_NAME) ]; then\
@@ -314,12 +314,7 @@ check:
 	echo $(NGINX_CONF)
 	echo $(MODIFY)
 	$(eval MODIFY=qwerty)
-	echo $(MODIFY)
-
-rand:
-	$(shell LC_ALL=C tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' </dev/urandom | head -c ${STR_LENGTH} ; echo)
-	# $(shell tr -dc A-Za-z0-9 </dev/urandom | head -c ${STR_LENGTH} ; echo '')
-	
+	echo $(MODIFY)	
 
 build: ## Build the docker image
 	@echo $(CUR_DIR)

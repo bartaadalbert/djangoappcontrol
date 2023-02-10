@@ -8,8 +8,8 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 
 case "$OSTYPE" in
-  darwin*)  SED="/usr/local/opt/gnu-sed/libexec/gnubin/sed" ;; 
-  linux*)   SED=$(which sed) ;;
+  darwin*)  GREP="/usr/local/bin/ggrep" ;; 
+  linux*)   GREP=$(which grep) ;;
   *)        echo "unknown: $OSTYPE"; exit 1 ;;
 esac
 
@@ -21,7 +21,7 @@ is_app_in_django_settings() {
         echo "${RED}Error: The django project settings file $SETTINGS_FILE does not exist"
         exit 1
     fi
-    cat $SETTINGS_FILE | grep -Pzo "INSTALLED_APPS\s?=\s?\[[\s\w\.,']*$2[\s\w\.,']*\]\n?" > /dev/null 2>&1
+    cat $SETTINGS_FILE | $GREP -Pzo "INSTALLED_APPS\s?=\s?\[[\s\w\.,']*$2[\s\w\.,']*\]\n?" > /dev/null 2>&1
     # now $?=0 if app is in settings file
     # $? not 0 otherwise
 }
@@ -35,8 +35,8 @@ add_app2django_settings() {
         # checking that app $2 successfully added to django project settings file
         is_app_in_django_settings $2
         if [ $? -ne 0 ]; then
-            # echo "Error. Could not add the app '$2' to the django project settings file '$SETTINGS_FILE'. Add it manually, then run this script again."
-            echo "The app '$2' was successfully added to the django settings file '$SETTINGS_FILE'."
+            echo "Error. Could not add the app '$2' to the django project settings file '$SETTINGS_FILE'. Add it manually, then run this script again."
+            # echo "The app '$2' was successfully added to the django settings file '$SETTINGS_FILE'."
             exit 0
         else
             echo "The app '$2' was successfully added to the django settings file '$SETTINGS_FILE'."

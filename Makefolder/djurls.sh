@@ -5,9 +5,14 @@ START_APP_NAME=$2
 DEFF_MAKER=${3:-"Makefolder"}
 RED='\033[0;31m'
 #LINUX
-SED=$(which sed)
+# SED=$(which sed)
 #MACOS, brew install gnu-sed
-SED="/usr/local/opt/gnu-sed/libexec/gnubin/sed"
+# SED="/usr/local/opt/gnu-sed/libexec/gnubin/sed"
+case "$OSTYPE" in
+  darwin*)  SED="/usr/local/opt/gnu-sed/libexec/gnubin/sed" ;; 
+  linux*)   SED=$(which sed) ;;
+  *)        echo "unknown: $OSTYPE"; exit 1 ;;
+esac
 
 if [ -z $1 ] ; then
 	echo -e "${RED}START APP NAME not given";
