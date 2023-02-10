@@ -293,10 +293,10 @@ tag: ## This will tag our git vith the version
 	@git tag $(VERSION)
 	@git push --tags
 
-create_pm2: ## Add pm2 config js to app folder
+create_pm2: checker## Add pm2 config js to app folder
 	@if [[ ! -d $(APP_NAME) ]]; then\
 		echo $(RED)"Cant add pm2 config if APP not created before";\
-		exit 0;\
+		exit 1;\
 	fi
 	$(shell $(SCRIPT_PM2) $(APP_NAME) "$(FINAL_PORT)")
 	@cp $(CUR_DIR)/$(DEFF_MAKER)$(PM2_CONFIG) $(APP_NAME)
@@ -307,10 +307,10 @@ bash_executable: ## Make all .sh file executable for our app
 	@echo $(GREEN)the bash files was made executable
 
 activate: ##Activate the venv
-	- source $(VENV)/bin/activate
+	-@source $(VENV)/bin/activate
 
 check:
-	echo $(SUBDOMAIN_CSRF)
+	-@echo $(SUBDOMAIN_CSRF)
 	echo $(NGINX_CONF)
 	echo $(MODIFY)
 	$(eval MODIFY=qwerty)
