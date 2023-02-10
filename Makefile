@@ -204,7 +204,7 @@ delete_context: checker ## Delete the context
 	@echo $(RED)The $(DOCKER_CONTEXT) was deleted
 
 add_installed_apps: checker ## Add in django settings installed apps new app
-	$(shell $(SCRIPT_DJ_INSTALLED_APPS) $(APP_NAME) $(START_APP_NAME))
+	$(shell $(SCRIPT_DJ_INSTALLED_APPS) $(START_APP_NAME) $(APP_NAME))
 	@echo $(BLUE)The app was added to installed app with name $(START_APP_NAME)
 
 just_venv: checker ## Create just venv
