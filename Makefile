@@ -203,10 +203,6 @@ delete_context: checker ## Delete the context
 	@docker context rm $(DOCKER_CONTEXT)
 	@echo $(RED)The $(DOCKER_CONTEXT) was deleted
 
-add_installed_apps: checker ## Add in django settings installed apps new app
-	$(shell $(SCRIPT_DJ_INSTALLED_APPS) $(START_APP_NAME) $(APP_NAME))
-	@echo $(BLUE)The app was added to installed app with name $(START_APP_NAME)
-
 just_venv: checker ## Create just venv
 	@rm -rf $(VENV)
 	@python3 -m venv $(VENV)
@@ -234,6 +230,10 @@ create_venv: checker## Create venv with Django startproject, and delete venv if 
 		echo $(YELLOW)"The django settings was changed with $(APP_NAME)";\
 		make add_installed_apps $(APP_NAME) $(START_APP_NAME);\
 	fi
+
+add_installed_apps: checker ## Add in django settings installed apps new app
+	$(shell $(SCRIPT_DJ_INSTALLED_APPS) $(START_APP_NAME) $(APP_NAME))
+	@echo $(BLUE)"The app was added to installed app with name $(START_APP_NAME)"
 
 app_settings: ## Change the existed app settings from settings dynamic
 	@if [[ -d $(APP_NAME)/$(START_APP_NAME) ]]; then\
