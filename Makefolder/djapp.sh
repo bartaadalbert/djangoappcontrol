@@ -38,15 +38,15 @@ is_app_in_django_settings() {
 add_app2django_settings() {
     is_app_in_django_settings $1
     if [ $? -ne 0 ]; then
-        printf "${YELLOW} Info. The app '$1' is not in the django project settings file '$SETTINGS_FILE'. Adding."
+        echo  "Info. The app '$1' is not in the django project settings file '$SETTINGS_FILE'. Adding." >&2;
         $SED -i -e '1h;2,$H;$!d;g' -re "s/(INSTALLED_APPS\s?=\s?\[[\n '._a-zA-Z,]*)/\1    '$1',\n/g" $SETTINGS_FILE
         # checking that app $1 successfully added to django project settings file
         is_app_in_django_settings $1
         if [ $? -ne 0 ]; then
-            echo "${RED} Error. Could not add the app '$1' to the django project settings file '$SETTINGS_FILE'. Add it manually, then run this script again." >&2;
+            echo "Error. Could not add the app '$1' to the django project settings file '$SETTINGS_FILE'. Add it manually, then run this script again." >&2;
             exit 1
         else
-            echo "${GREEN} Info. The app '$1' was successfully added to the django settings file '$SETTINGS_FILE'." >&2;
+            echo "Info. The app '$1' was successfully added to the django settings file '$SETTINGS_FILE'." >&2;
             exit 0
         fi
     else
