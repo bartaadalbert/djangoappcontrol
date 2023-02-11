@@ -234,6 +234,9 @@ just_venv: checker ## Create just venv
 		fi \
 	fi
 	@source $(VENV)/bin/activate && python3 -m pip install --upgrade pip && pip install --upgrade -r $(DEF_REQUIREMENTS)
+	@echo $(BLUE)"The venv was created  with name $(VENV)"
+	@make create_pm2;
+
 
 create_requirements: ## USE path to project and create requirements txt for your python app
 	@if [[ -d $(VENV) ]]; then\
@@ -255,6 +258,7 @@ create_app: checker## Create venv with Django startproject, and delete venv if e
 		echo "$(APP_NAME)/$(APP_NAME)/settings.py" >> .gitignore;\
 		echo "$(APP_NAME)/.env*" >> .gitignore;\
 		source $(VENV)/bin/activate && django-admin startproject $(APP_NAME) && cd $(APP_NAME) && python3 manage.py startapp $(START_APP_NAME);\
+		make create_pm2;\
 		echo $(BLUE)"The app folder $(APP_NAME) created with startapp $(START_APP_NAME) successfully";\
 	else\
 		echo $(YELLOW)"The app folder $(APP_NAME) exist, nothing to do";\
@@ -330,7 +334,7 @@ tag: ## This will tag our git vith the version
 	@git tag $(VERSION)
 	@git push --tags
 
-create_pm2: checker## Add pm2 config js to app folder
+create_pm2: ## Add pm2 config js to app folder
 	@if [[ ! -d $(APP_NAME) ]]; then\
 		echo $(RED)"Cant add pm2 config if APP not created before";\
 		exit 1;\
@@ -340,7 +344,13 @@ create_pm2: checker## Add pm2 config js to app folder
 	@echo $(BLUE)The config js was created and copied to APP folder
 
 bash_executable: ## Make all .sh file executable for our app
-	@sudo chmod u+x $(DEFF_MAKER)*.sh
+	@sudo chmod u+x $(DEFF_MAKER)django/*.sh
+	@sudo chmod u+x $(DEFF_MAKER)docker/*.sh
+	@sudo chmod u+x $(DEFF_MAKER)git/*.sh
+	@sudo chmod u+x $(DEFF_MAKER)godaddy/*.sh
+	@sudo chmod u+x $(DEFF_MAKER)nginx/*.sh
+	@sudo chmod u+x $(DEFF_MAKER)pm2/*.sh
+	@sudo chmod u+x $(DEFF_MAKER)version/*.sh
 	@echo $(GREEN)the bash files was made executable
 
 activate: ##Activate the venv
