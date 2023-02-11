@@ -212,12 +212,18 @@ just_venv: checker ## Create just venv
 	@read -p "APP exist with requirements.txt? [y/N] " ans && ans=$${ans:-N} ; \
 	if [ $${ans} = y ] || [ $${ans} = Y ]; then \
 		printf $(_SUCCESS) "YES" ; \
-		if [[ ! -z $(PATH_TO_PROJECT)/requirements.txt ]]; then \
+		if [ -d $(PATH_TO_PROJECT) ] && [ -f $(PATH_TO_PROJECT)/requirements.txt ]; then \
 			cat $(PATH_TO_PROJECT)/requirements.txt >> $(DEF_REQUIREMENTS); \
 		fi \
 	else \
 		printf $(_DANGER) "NO, app requirements not adding! " ; \
-		if [[ -d $(APP_NAME) ]]; then\
+		if [[ -d $(APP_NAME) ]]; then \
+			cat $(GITIGNORE_STATIC) >> .gitignore;\
+			echo "$(APP_NAME)/$(APP_NAME)/__pycache__" >> .gitignore;\
+			echo "$(APP_NAME)/$(START_APP_NAME)/__pycache__" >> .gitignore;\
+			echo "$(APP_NAME)/$(APP_NAME)/settings.py" >> .gitignore;\
+			echo "$(APP_NAME)/.env*" >> .gitignore;\
+			printf $(_DANGER) "TRY TO CREATE REQUIREMENTS?" ; \
 			printf $(_DANGER) "TRY TO CREATE REQUIREMENTS?" ; \
 			read -p "CREATE REQUIREMENTS? [y/N] " ans && ans=$${ans:-N} ; \
 			if [ $${ans} = y ] || [ $${ans} = Y ]; then \
@@ -225,11 +231,6 @@ just_venv: checker ## Create just venv
 				make create_requirements; \
 				cat $(PATH_TO_PROJECT)/requirements.txt >> $(DEF_REQUIREMENTS); \
 			fi \
-			cat $(GITIGNORE_STATIC) >> .gitignore;\
-			echo "$(APP_NAME)/$(APP_NAME)/__pycache__" >> .gitignore;\
-			echo "$(APP_NAME)/$(START_APP_NAME)/__pycache__" >> .gitignore;\
-			echo "$(APP_NAME)/$(APP_NAME)/settings.py" >> .gitignore;\
-			echo "$(APP_NAME)/.env*" >> .gitignore;\
 		fi \
 	fi
 	@source $(VENV)/bin/activate && python3 -m pip install --upgrade pip && pip install --upgrade -r $(DEF_REQUIREMENTS)
