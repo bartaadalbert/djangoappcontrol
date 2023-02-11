@@ -4,7 +4,7 @@ DEFF_MAKER = Makefolder/
 FILE_NAME_CHECK = anyfilename #PLEASE CHANGE TO ENY WHEN USING FILE CHECKER
 PATH_TO_FILE = $(DEFF_MAKER)$(FILE_NAME_CHECK) #ENABLE PUTH FILE CHECKING, USING OUR MAKEFOLDER
 DEF_REQUIREMENTS = $(DEFF_MAKER)requirements.txt #USING REQUIERMENTS FOR OUR APP
-GITIGNORE_STATIC = $(DEFF_MAKER)gitignorestatic #PATH TO static gitignore preperad just for your app
+GITIGNORE_STATIC = $(DEFF_MAKER)git/gitignorestatic #PATH TO static gitignore preperad just for your app
 CUR_DIR = $(shell echo "${PWD}")
 DOCKER_FILE_DIR := "dockerfiles"
 YELLOW = "\033[1;33m" # Yellow text for echo
@@ -16,18 +16,18 @@ _SUCCESS := "\033[32m[%s]\033[0m %s\n" # Green text for "printf"
 _DANGER := "\033[31m[%s]\033[0m %s\n" # Red text for "printf"
 
 #GET ADD VERSION
-FILE := $(DEFF_MAKER)version.txt
-VARIABLE := $(shell cat ${FILE})
+VERSION_FILE := $(DEFF_MAKER)version/version.txt
+VARIABLE := $(shell cat ${VERSION_FILE})
 DEFVERSION:= 1.0.0
 VERSION := $(if $(VARIABLE),$(VARIABLE),$(DEFVERSION))
-SCRIPT_VERSION:= $(DEFF_MAKER)version.sh
-SCRIPT_GDD := $(DEFF_MAKER)gdd.sh
-SCRIPT_NGINX := $(DEFF_MAKER)nginxgenerator.sh
-SCRIPT_PM2 := $(DEFF_MAKER)pm2creator.sh
-SCRIPT_GIT := $(DEFF_MAKER)gitrepo.sh
-SCRIPT_DJ_SETTINGS := $(DEFF_MAKER)djsettings.sh
-SCRIPT_DJ_URLS := $(DEFF_MAKER)djurls.sh
-SCRIPT_DJ_INSTALLED_APPS := $(DEFF_MAKER)djapp.sh
+SCRIPT_VERSION:= $(DEFF_MAKER)version/version.sh
+SCRIPT_GDD := $(DEFF_MAKER)godaddy/gdd.sh
+SCRIPT_NGINX := $(DEFF_MAKER)nginx/nginxgenerator.sh
+SCRIPT_PM2 := $(DEFF_MAKER)pm2/pm2creator.sh
+SCRIPT_GIT := $(DEFF_MAKER)git/gitrepo.sh
+SCRIPT_DJ_SETTINGS := $(DEFF_MAKER)django/djsettings.sh
+SCRIPT_DJ_URLS := $(DEFF_MAKER)django/djurls.sh
+SCRIPT_DJ_INSTALLED_APPS := $(DEFF_MAKER)django/djapp.sh
 ARGUMENT:= feature #can use major/feature/bug
 NEWVERSION:=$(shell $(SCRIPT_VERSION) $(VERSION) $(ARGUMENT))
 MESSAGE := app created, DEFAULT message
@@ -75,7 +75,7 @@ IMAGE_NAME := ${APP_NAME}
 VENV := venv_$(APP_NAME)
 GITSSH := git@github.com:bartaadalbert/$(APP_NAME).git
 BRANCH := main
-NGINX_CONF := $(DEFF_MAKER)$(APP_NAME).$(DOMAIN).conf
+NGINX_CONF := $(DEFF_MAKER)nginx/$(APP_NAME).$(DOMAIN).conf
 SUBDOMAIN := $(APP_NAME).$(DOMAIN)
 SUBDOMAIN_CSRF := "https:\/\/$(APP_NAME).$(DOMAIN)"
 SSH_SERVER := $(REMOTE_USER)@$(REMOTE_HOST)
@@ -310,18 +310,18 @@ git_push: ##Git add . and commit and push to branch, add tag
 	- @git push -u origin $(BRANCH)
 
 save_version: check_version ## Save a new version with increment param ARGUMENT=[1.0.0:major/feature/bug]
-	$(shell echo $(NEWVERSION) > $(FILE))
+	$(shell echo $(NEWVERSION) > $(VERSION_FILE))
 	@echo $(GREEN)new version: $(NEWVERSION)
 
 check_version: ## Get the actual version
 	@echo $(BLUE)current version: $(VERSION)
 
 reset_version: clean_version ## This will generate new file with DEFVERSION or any VERSION
-	$(shell echo $(DEFVERSION) > $(FILE))
+	$(shell echo $(DEFVERSION) > $(VERSION_FILE))
 	@echo $(RED)reset version: $(DEFVERSION)
 
 clean_version: checker## This will delete our version file, will set version to DEFVERSION 1.0.0 or what you give
-	$(shell rm $(FILE))
+	$(shell rm $(VERSION_FILE))
 	@echo $(RED)the version file was deleted from app directory
 
 tag: ## This will tag our git vith the version 
@@ -336,7 +336,7 @@ create_pm2: checker## Add pm2 config js to app folder
 		exit 1;\
 	fi
 	$(shell $(SCRIPT_PM2) $(APP_NAME) "$(FINAL_PORT)")
-	@cp $(CUR_DIR)/$(DEFF_MAKER)$(PM2_CONFIG) $(APP_NAME)
+	@cp $(CUR_DIR)/$(DEFF_MAKER)pm2/$(PM2_CONFIG) $(APP_NAME)
 	@echo $(BLUE)The config js was created and copied to APP folder
 
 bash_executable: ## Make all .sh file executable for our app

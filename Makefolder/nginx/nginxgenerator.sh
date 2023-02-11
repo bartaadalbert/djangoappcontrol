@@ -1,6 +1,6 @@
 #!/bin/bash
 RED='\033[0;31m'
-DEFF_MAKER={3:-"Makefolder"}
+DEFF_MAKER=${3:-"Makefolder/nginx"}
 #LINUX
 # SED=$(which sed)
 #MACOS, brew install gnu-sed

@@ -2,7 +2,7 @@
 #usage START_APP_NAME
 APP_NAME=$1
 START_APP_NAME=$2
-DEFF_MAKER=${3:-"Makefolder"}
+DEFF_MAKER=${3:-"Makefolder/django"}
 RED='\033[0;31m'
 #LINUX
 # SED=$(which sed)

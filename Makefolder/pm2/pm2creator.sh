@@ -6,7 +6,7 @@ SED=$(which sed)
 SED="/usr/local/opt/gnu-sed/libexec/gnubin/sed"
 APP_NAME=${1:-"my_app"}
 FINAL_PORT=${2:-8080}
-DEFF_MAKER=${3:-"Makefolder"}
+DEFF_MAKER=${3:-"Makefolder/pm2"}
 
 
 #CHECK THE UPDOWN FILE EXIST

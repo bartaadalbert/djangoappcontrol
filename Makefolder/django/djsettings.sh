@@ -2,7 +2,7 @@
 #usage APP NAME
 APP_NAME=$1
 SUBDOMAIN=${2:-"http://server.local"}
-DEFF_MAKER=${3:-"Makefolder"}
+DEFF_MAKER=${3:-"Makefolder/django"}
 RED='\033[0;31m'
 # DJANGO_INSECURE_KEY=$(LC_ALL=C tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' </dev/urandom | head -c 64 ; echo >&1)
 DJANGO_INSECURE_KEY=$(cat /dev/urandom | LC_ALL=C tr -dc 'A-Za-z0-9#$%'\''()*+,-./:?@^_~' | head -c 64)

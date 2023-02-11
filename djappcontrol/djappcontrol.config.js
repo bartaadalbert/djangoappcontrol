@@ -1,7 +1,7 @@
 module.exports = {
   apps : [{
-    name: 'ipinfo',
-    script: '  gunicorn ipinfo.wsgi -w 2  --threads=2  --bind 127.0.0.1:8008;  ',
+    name: 'djappcontrol',
+    script: '  gunicorn djappcontrol.wsgi -w 2  --threads=2  --bind 127.0.0.1:8008;  ',
     args: 'one two',
     merge_logs: true,
     autorestart: true,

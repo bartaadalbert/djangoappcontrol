@@ -11,8 +11,7 @@ CURL_EXTION=${3:-"PUT"}
 # DEF_IP=`dig $DOMAIN +short @resolver1.opendns.com`
 
 IP=${4:-`dig $DOMAIN +short @resolver1.opendns.com`}
-echo $IP
-exit 1
+
 if [ -z $1 ] || [ -z $2 ]; then
 	echo -e "${RED}Domain or subdomain not given";
 	exit 1;
