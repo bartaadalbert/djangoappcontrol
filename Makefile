@@ -212,7 +212,7 @@ just_venv: checker ## Create just venv
 	@read -p "APP exist with requirements.txt? [y/N] " ans && ans=$${ans:-N} ; \
 	if [ $${ans} = y ] || [ $${ans} = Y ]; then \
 		printf $(_SUCCESS) "YES" ; \
-		if [[ ! -f $(PATH_TO_PROJECT)/requirements.txt ]]; then \
+		if [[ ! -z $(PATH_TO_PROJECT)/requirements.txt ]]; then \
 			cat $(PATH_TO_PROJECT)/requirements.txt >> $(DEF_REQUIREMENTS); \
 		fi \
 	else \
