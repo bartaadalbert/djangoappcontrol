@@ -257,8 +257,7 @@ create_app: checker## Create venv with Django startproject, and delete venv if e
 		echo "$(APP_NAME)/$(START_APP_NAME)/__pycache__" >> .gitignore;\
 		echo "$(APP_NAME)/$(APP_NAME)/settings.py" >> .gitignore;\
 		echo "$(APP_NAME)/.env*" >> .gitignore;\
-		source $(VENV)/bin/activate && django-admin startproject $(APP_NAME) && cd $(APP_NAME) && python3 manage.py startapp $(START_APP_NAME);\
-		make create_pm2;\
+		source $(VENV)/bin/activate && django-admin startproject $(APP_NAME) && make create_pm2 && cd $(APP_NAME) && python3 manage.py startapp $(START_APP_NAME);\
 		echo $(BLUE)"The app folder $(APP_NAME) created with startapp $(START_APP_NAME) successfully";\
 	else\
 		echo $(YELLOW)"The app folder $(APP_NAME) exist, nothing to do";\
