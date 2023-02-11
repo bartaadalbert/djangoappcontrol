@@ -267,6 +267,7 @@ git_init: ## ADD ssh pub key to git, this will be simple for the future using, a
 	@git push -u origin $(BRANCH)
 
 git_push: ##Git add . and commit and push to branch, add tag
+	@make save_version
 	@git status
 	- @git add .
 	- @git commit -m "$(MESSAGE) with version $(VERSION)"
