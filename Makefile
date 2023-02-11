@@ -150,7 +150,7 @@ create_nginx: ## Create an nginx config with proxypass and servername
 create_ssl: ## Create ssl with certbot for our nginx conf in our server
 	@if [ ! -f $(NGINX_CONF) ]; then\
 		printf $(_DANGER) "The NGINX conf not exist, CREATE IT WITH: make create_nginx" ;\
-		echo  $(YELLOW)"WE CAN CREATE THE CONFIG FILE NOW";\
+		echo  $(YELLOW)"CREATE IT, AND CONTINUE?";\
 		make checker;\
 		make create_nginx;\
 	fi
@@ -215,7 +215,16 @@ just_venv: checker ## Create just venv
 			cat $(PATH_TO_PROJECT)/requirements.txt >> $(DEF_REQUIREMENTS); \
 		fi \
 	else \
-		printf $(_DANGER) "NO, app requirements not adding" ; \
+		printf $(_DANGER) "NO, app requirements not adding! " ; \
+		if [[ -d $(APP_NAME) ]]; then\
+			printf $(_DANGER) "TRY TO CREATE REQUIREMENTS?" ; \
+			read -p "CREATE REQUIREMENTS? [y/N] " ans && ans=$${ans:-N} ; \
+			if [ $${ans} = y ] || [ $${ans} = Y ]; then \
+				printf $(_SUCCESS) "YES" ; \
+				make create_requirements; \
+				cat $(PATH_TO_PROJECT)/requirements.txt >> $(DEF_REQUIREMENTS); \
+			fi \
+		fi \
 	fi
 	@source $(VENV)/bin/activate && python3 -m pip install --upgrade pip && pip install --upgrade -r $(DEF_REQUIREMENTS)
 
