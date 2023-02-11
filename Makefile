@@ -81,6 +81,8 @@ SSH_SERVER := $(REMOTE_USER)@$(REMOTE_HOST)
 PROXY_PASS := http:\/\/127.0.0.1:$(FINAL_PORT)
 PM2_CONFIG := $(APP_NAME).config.js
 APP_START := $(APP_NAME)/$(START_APP_NAME)
+PATH_TO_PROJECT := $(APP_NAME)
+
 
 define my_func
     $(eval $@_PROTOCOL = "https:"")
@@ -183,10 +185,10 @@ context: ##Get available docker context s
 	@docker context ls
 
 images: ## Get all docker images
-	- @docker images
+	-@docker images
 
 ps: ## Get all runing docker containers
-	- @docker ps -a 
+	-@docker ps -a 
 
 change_context: context ## Change the docker context to other server
 	@make checker
@@ -206,7 +208,25 @@ delete_context: checker ## Delete the context
 just_venv: checker ## Create just venv
 	@rm -rf $(VENV)
 	@python3 -m venv $(VENV)
+	@read -p "APP exist with requirements.txt? [y/N] " ans && ans=$${ans:-N} ; \
+	if [ $${ans} = y ] || [ $${ans} = Y ]; then \
+		printf $(_SUCCESS) "YES" ; \
+		if [[ ! -f $(PATH_TO_PROJECT)/requirements.txt ]]; then \
+			cat $(PATH_TO_PROJECT)/requirements.txt >> $(DEF_REQUIREMENTS); \
+		fi \
+	else \
+		printf $(_DANGER) "NO, app requirements not adding" ; \
+	fi
 	@source $(VENV)/bin/activate && python3 -m pip install --upgrade pip && pip install --upgrade -r $(DEF_REQUIREMENTS)
+
+create_requirements: ## USE path to project and create requirements txt for your python app
+	@if [[ -d $(VENV) ]]; then\
+		source $(VENV)/bin/activate && pip install pipreqs && pipreqs $(PATH_TO_PROJECT); \
+		echo $(BLUE)"The requirements created successfully";\
+	else\
+		echo $(RED)"The VENV FOLDER NOT EXIST, CANT CREATE REQUIERMENTS";\
+	fi
+
 
 create_app: checker## Create venv with Django startproject, and delete venv if exist
 	@rm -rf $(VENV)
