@@ -208,7 +208,7 @@ just_venv: checker ## Create just venv
 	@python3 -m venv $(VENV)
 	@source $(VENV)/bin/activate && python3 -m pip install --upgrade pip && pip install --upgrade -r $(DEF_REQUIREMENTS)
 
-create_venv: checker## Create venv with Django startproject, and delete venv if exist
+create_app: checker## Create venv with Django startproject, and delete venv if exist
 	@rm -rf $(VENV)
 	@python3 -m venv $(VENV)
 	@source $(VENV)/bin/activate && python3 -m pip install --upgrade pip && pip install --upgrade -r $(DEF_REQUIREMENTS)
@@ -224,10 +224,10 @@ create_venv: checker## Create venv with Django startproject, and delete venv if 
 		echo $(YELLOW)"The app folder $(APP_NAME) exist, nothing to do";\
 	fi
 
-	@if [[ -d $(APP_NAME)/$(START_APP_NAME) ]]; then\
+	-@if [[ -d $(APP_NAME)/$(START_APP_NAME) ]]; then\
 		$(SCRIPT_DJ_SETTINGS) $(APP_NAME) $(SUBDOMAIN_CSRF);\
 		$(SCRIPT_DJ_URLS) $(APP_NAME) $(START_APP_NAME);\
-		echo $(YELLOW)"The django settings was changed with $(APP_NAME)";\
+		echo $(YELLOW)"The django settings was changed on app $(APP_NAME)";\
 		make add_installed_apps $(APP_NAME) $(START_APP_NAME);\
 	fi
 
