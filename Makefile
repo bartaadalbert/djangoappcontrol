@@ -4,6 +4,7 @@ DEFF_MAKER = Makefolder/
 FILE_NAME_CHECK = anyfilename #PLEASE CHANGE TO ENY WHEN USING FILE CHECKER
 PATH_TO_FILE = $(DEFF_MAKER)$(FILE_NAME_CHECK) #ENABLE PUTH FILE CHECKING, USING OUR MAKEFOLDER
 DEF_REQUIREMENTS = $(DEFF_MAKER)requirements.txt #USING REQUIERMENTS FOR OUR APP
+GITIGNORE_STATIC = $(DEFF_MAKER)gitignorestatic #PATH TO static gitignore preperad just for your app
 CUR_DIR = $(shell echo "${PWD}")
 DOCKER_FILE_DIR := "dockerfiles"
 YELLOW = "\033[1;33m" # Yellow text for echo
@@ -224,6 +225,11 @@ just_venv: checker ## Create just venv
 				make create_requirements; \
 				cat $(PATH_TO_PROJECT)/requirements.txt >> $(DEF_REQUIREMENTS); \
 			fi \
+			cat $(GITIGNORE_STATIC) >> .gitignore;\
+			echo "$(APP_NAME)/$(APP_NAME)/__pycache__" >> .gitignore;\
+			echo "$(APP_NAME)/$(START_APP_NAME)/__pycache__" >> .gitignore;\
+			echo "$(APP_NAME)/$(APP_NAME)/settings.py" >> .gitignore;\
+			echo "$(APP_NAME)/.env*" >> .gitignore;\
 		fi \
 	fi
 	@source $(VENV)/bin/activate && python3 -m pip install --upgrade pip && pip install --upgrade -r $(DEF_REQUIREMENTS)
@@ -242,7 +248,7 @@ create_app: checker## Create venv with Django startproject, and delete venv if e
 	@python3 -m venv $(VENV)
 	@source $(VENV)/bin/activate && python3 -m pip install --upgrade pip && pip install --upgrade -r $(DEF_REQUIREMENTS)
 	@if [[ ! -d $(APP_NAME) ]]; then\
-		cp gitignorestatic .gitignore;\
+		cp $(GITIGNORE_STATIC) .gitignore;\
 		echo "$(APP_NAME)/$(APP_NAME)/__pycache__" >> .gitignore;\
 		echo "$(APP_NAME)/$(START_APP_NAME)/__pycache__" >> .gitignore;\
 		echo "$(APP_NAME)/$(APP_NAME)/settings.py" >> .gitignore;\
