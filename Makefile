@@ -312,6 +312,12 @@ git_push: ##Git add . and commit and push to branch, add tag
 	- @git commit -m "$(MESSAGE) with version $(VERSION)"
 	- @git push -u origin $(BRANCH)
 
+git_tag: ## This will tag our git with actual version 
+	@git checkout $(BRANCH)
+	@echo $(VERSION)
+	@git tag $(VERSION)
+	@git push --tags
+
 save_version: check_version ## Save a new version with increment param ARGUMENT=[1.0.0:major/feature/bug]
 	$(shell echo $(NEWVERSION) > $(VERSION_FILE))
 	@echo $(GREEN)new version: $(NEWVERSION)
@@ -324,14 +330,9 @@ reset_version: clean_version ## This will generate new file with DEFVERSION or a
 	@echo $(RED)reset version: $(DEFVERSION)
 
 clean_version: checker## This will delete our version file, will set version to DEFVERSION 1.0.0 or what you give
-	$(shell rm $(VERSION_FILE))
+	$(shell rm -f $(VERSION_FILE))
 	@echo $(RED)the version file was deleted from app directory
 
-tag: ## This will tag our git vith the version 
-	@git checkout $(BRANCH)
-	@echo $(VERSION)
-	@git tag $(VERSION)
-	@git push --tags
 
 create_pm2: ## Add pm2 config js to app folder
 	@if [[ ! -d $(APP_NAME) ]]; then\
@@ -351,9 +352,6 @@ bash_executable: ## Make all .sh file executable for our app
 	@sudo chmod u+x $(DEFF_MAKER)pm2/*.sh
 	@sudo chmod u+x $(DEFF_MAKER)version/*.sh
 	@echo $(GREEN)the bash files was made executable
-
-activate: ##Activate the venv
-	-@source $(VENV)/bin/activate
 
 check:
 	-@echo $(SUBDOMAIN_CSRF)
