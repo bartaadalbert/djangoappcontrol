@@ -2,10 +2,11 @@
 #usage APP NAME
 APP_NAME=$1
 SUBDOMAIN=${2:-"http://server.local"}
-DEFF_MAKER=${3:-"Makefolder/django"}
+REDIS_LOCATION=${3:-"127.0.0.0"}
+DEFF_MAKER=${4:-"Makefolder/django"}
 RED='\033[0;31m'
 # DJANGO_INSECURE_KEY=$(LC_ALL=C tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' </dev/urandom | head -c 64 ; echo >&1)
-DJANGO_INSECURE_KEY=$(cat /dev/urandom | LC_ALL=C tr -dc 'A-Za-z0-9#$%'\''()*+,-./:?@^_~' | head -c 64)
+DJANGO_INSECURE_KEY=$(cat /dev/urandom | LC_ALL=C tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-.:;<=>?@[\]^_`{|}~' | head -c 64)
 #LINUX
 # SED=$(which sed)
 #MACOS, brew install gnu-sed
@@ -38,6 +39,7 @@ fi
 cp "$PWD/$DEFF_MAKER/djangosettings.stub" $CONFIG
 $SED -i "s/{{APP_NAME}}/$APP_NAME/g" $CONFIG
 $SED -i "s/{{SUBDOMAIN}}/$SUBDOMAIN/g" $CONFIG
+$SED -i "s/{{REDIS_LOCATION}}/$REDIS_LOCATION/g" $CONFIG
 $SED -i "s/{{DJANGO_INSECURE_KEY}}/$DJANGO_INSECURE_KEY/g" $CONFIG
 mv $CONFIG "$APP_NAME/$APP_NAME/settings.py"
 sudo chmod 644 "$APP_NAME/$APP_NAME/settings.py"

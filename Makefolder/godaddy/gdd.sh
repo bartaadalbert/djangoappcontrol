@@ -4,8 +4,8 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m' 
 DOMAIN=$1
 SUB_DOMAIN=$2
-GODADDY_API_KEY=GODADDY_API_KEY
-GODADDY_API_SECRET=GODADDY_API_SECRET
+GODADDY_API_KEY='e5XqFzmYjSic_LP1zsNHDnutexzQ8ZbCUeJ'
+GODADDY_API_SECRET='HRTKMo6tx78DdkkeUm9FYx'
 CURL_EXTION=${3:-"PUT"}
 # Get IP Address
 # DEF_IP=`dig $DOMAIN +short @resolver1.opendns.com`
@@ -21,9 +21,9 @@ if [ $CURL_EXTION == "PUT" ] || [ $CURL_EXTION == "DELETE" ]; then
 	
 	# Create DNS A Record
 	curl -X $CURL_EXTION \
-	-H 'Content-Type: application/json' \
-	-H 'Accept: application/json' \ 
+	-H "Content-Type: application/json" \
 	-H "Authorization: sso-key $GODADDY_API_KEY:$GODADDY_API_SECRET" \
+	-H "Accept: application/json" \
 	"https://api.godaddy.com/v1/domains/$DOMAIN/records/A/$SUB_DOMAIN" \
 	-d "[{\"data\": \"$IP\", \"ttl\":600}]"
 else

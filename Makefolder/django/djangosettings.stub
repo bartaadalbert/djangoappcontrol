@@ -1,4 +1,4 @@
-import os
+aimport os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -126,6 +126,6 @@ CSRF_TRUSTED_ORIGINS = ['{{SUBDOMAIN}}']
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': '127.0.0.1:6379/1',
+        'LOCATION': '{{REDIS_LOCATION}}:6379/1',
     }
 }
