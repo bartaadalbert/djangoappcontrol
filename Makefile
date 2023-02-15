@@ -205,7 +205,7 @@ file_check: ## CHECK IF FILE EXISTING in MAIN DEFF_MAKER OR CHANGE THE PATH_TO_F
 	fi
 
 preconfig: ## Add all needed files
-	@if [[ -d $(APP_NAME) ]]; then\ 
+	@if [[ -d $(APP_NAME) ]]; then \
 		mkdir $(APP_NAME)/$(DOCKER_FILE_DIR);\
 		touch $(APP_NAME)/$(APP_DOCKERFILE);\
 		touch $(APP_NAME)/$(NGINX_DOCKERFILE);\
