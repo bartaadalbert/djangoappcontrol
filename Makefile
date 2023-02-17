@@ -33,7 +33,6 @@ GITIGNORE_STATIC = $(DEFF_MAKER)git/gitignorestatic
 #DOCKER FOLDER NAME, we will use it in app folder with settings file
 DOCKER_FILE_DIR := dockerfiles
 
-
 #GET FOLDERS VARIABLES
 # VERSION FILE PATH
 VERSION_FILE := $(DEFF_MAKER)version/version.txt
@@ -190,6 +189,8 @@ POSTGRES_DB := $(SQL_DATABASE)
 DJANGO_SUPERUSER_USERNAME := $(shell uuidgen | sed 's/[-]//g' | head -c 20;)
 DJANGO_SUPERUSER_PASSWORD := $(shell LC_ALL=C tr -dc 'A-Za-z0-9!,-.+?:@=^_~' </dev/urandom | head -c 32)
 DJANGO_SUPERUSER_EMAIL := admin@$(DOMAIN)
+DOCKER_COMPOSE := docker-compose
+DOCKER_COMPOSE_FILE := $(APP_NAME)/$(APP_COMPOSEFILE)
 
 define my_func
     $(eval $@_PROTOCOL = "https:"")
@@ -253,6 +254,20 @@ preconfig: ## Add all needed files
 		echo POSTGRES_USER=$(POSTGRES_USER) >> $(APP_NAME)/$(DOCKER_DB_ENV);\
 		echo POSTGRES_PASSWORD=$(POSTGRES_PASSWORD) >> $(APP_NAME)/$(DOCKER_DB_ENV);\
 		echo POSTGRES_DB=$(POSTGRES_DB) >> $(APP_NAME)/$(DOCKER_DB_ENV);\
+		echo APP_IMAGE_NAME=$(APP_IMAGE_NAME) >> $(APP_NAME)/.env;\
+		echo APP_DOCKERFILE=$(APP_DOCKERFILE) >> $(APP_NAME)/.env;\
+		echo STATIC_FILES=$(STATIC_FILES) >> $(APP_NAME)/.env;\
+		echo MEDIA_FILES=$(MEDIA_FILES) >> $(APP_NAME)/.env;\
+		echo PORT_APP=$(PORT_APP) >> $(APP_NAME)/.env;\
+		echo DOCKER_APP_ENV=$(DOCKER_APP_ENV) >> $(APP_NAME)/.env;\
+		echo DB_IMAGE_NAME=$(DB_IMAGE_NAME) >> $(APP_NAME)/.env;\
+		echo REDIS_IMAGE_NAME=$(REDIS_IMAGE_NAME) >> $(APP_NAME)/.env;\
+		echo DOCKER_DB_ENV=$(DOCKER_DB_ENV) >> $(APP_NAME)/.env;\
+		echo PORT_PSQ=$(PORT_PSQ) >> $(APP_NAME)/.env;\
+		echo PORT_REDIS=$(PORT_REDIS) >> $(APP_NAME)/.env;\
+		echo NGINX_IMAGE_NAME=$(NGINX_IMAGE_NAME) >> $(APP_NAME)/.env;\
+		echo PORT_NGINX=$(PORT_NGINX) >> $(APP_NAME)/.env;\
+		echo DOCKER_NETWORK=$(DOCKER_NETWORK) >> $(APP_NAME)/.env;\
 	else\
 		echo $(RED)"The app folder $(APP_NAME) not exist, cant add configs";\
 	fi
@@ -543,14 +558,32 @@ check:
 	$(eval MODIFY=qwerty)
 	echo $(MODIFY)	
 
-bb:
-	@echo $(STR)
- 
 
-
-build: ## Build the docker image
+build: ## Build the docker image FULL
 	@echo $(CUR_DIR)
 	@echo $(THIS_MAKEFILE)
+
+up: ## Start all or c=<name> containers in foreground
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up $(c)
+
+start: ## Start all or c=<name> containers in background
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up -d $(c)
+
+stop: ## Stop all or c=<name> containers
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) stop $(c)
+
+status: ## Show status of containers
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) ps
+
+restart: ## Restart all or c=<name> containers
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) stop $(c)
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up $(c) -d
+
+logs: ## Show logs for all or c=<name> containers
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) logs --tail=100 -f $(c)
+
+clean: confirm ## Clean all data
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) down
 
 
 
