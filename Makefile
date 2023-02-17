@@ -183,7 +183,7 @@ DJANGO_ALLOWED_HOSTS := localhost 127.0.0.1 [::1] $(SUBDOMAIN)
 SQL_ENGINE := django.db.backends.postgresql
 SQL_DATABASE := $(APP_NAME)_db$(DEV_MODE)
 SQL_USER := $(shell uuidgen | sed 's/[-]//g' | head -c 20;)
-SQL_PASSWORD := $(shell LC_ALL=C tr -dc 'A-Za-z0-9!,-.+?:@^_~' </dev/urandom | head -c 32)
+SQL_PASSWORD := $(shell LC_ALL=C tr -dc 'A-Za-z0-9-._' </dev/urandom | head -c 32)
 # SQL_PASSWORD := $(shell openssl rand -base64 32)
 SQL_HOST := $(DB_IMAGE_NAME)
 SQL_PORT := $(PORT_PSQ_DEF)
