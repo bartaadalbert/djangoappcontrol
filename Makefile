@@ -244,9 +244,7 @@ preconfig: ## Add all needed files
 		cp $(DEFF_MAKER)/docker/$(APP_IMAGE_NAME).conf $(APP_NAME)/$(NGINX_DOCKER_CONF);\
 		cp $(DEFF_MAKER)/docker/start-server.sh $(APP_NAME)/$(DOCKER_FILE_DIR)/start-server.sh;\
 		cp $(DEFF_MAKER)/docker/entripoint.sh $(APP_NAME)/$(DOCKER_FILE_DIR)/entripoint.sh;\
-		if [[ ! -f $(DOCKER_CHANGE_COMPOSE_FILE) ]]; then \
-			make set_compose; \
-		fi \
+		make set_compose; \
 		cp $(DEFF_MAKER)docker/app_docker_compose.stub $(APP_NAME)/$(APP_COMPOSEFILE);\
 		echo DEBUG=$(DEV_MODE) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
 		echo SECRET_KEY=$(RAND_STR) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
