@@ -81,7 +81,6 @@ REMOTE_HOST := jsonsmile.com
 APP_DOCKERFILE := ${DOCKER_FILE_DIR}/dev.Dockerfile
 #DEVELOP docker nginx config file
 NGINX_DOCKERFILE := ${DOCKER_FILE_DIR}/dev.nginx.Dockerfile
-NGINX_DOCKER_CONF := ${DOCKER_FILE_DIR}/$(APP_IMAGE_NAME).conf
 #DEVELOP docker-compose yml file
 APP_COMPOSEFILE := dev.docker-compose.yml
 #DEVELOP ENV FILE
@@ -119,7 +118,6 @@ START_APP_NAME := control
 REMOTE_HOST := jsonsmile.com
 APP_DOCKERFILE := ${DOCKER_FILE_DIR}/prod.Dockerfile
 NGINX_DOCKERFILE := ${DOCKER_FILE_DIR}/prod.nginx.Dockerfile
-NGINX_DOCKER_CONF := ${DOCKER_FILE_DIR}/$(APP_IMAGE_NAME).conf
 APP_COMPOSEFILE := prod.docker-compose.yml
 DOCKER_APP_ENV := ${DOCKER_FILE_DIR}/.env.prod
 DOCKER_DB_ENV := ${DOCKER_FILE_DIR}/.env.prod.db
@@ -144,6 +142,8 @@ DB_IMAGE_NAME := db_$(APP_NAME)
 NGINX_IMAGE_NAME := nginx_$(APP_NAME)
 REDIS_IMAGE_NAME := redis_$(APP_NAME)
 MEMCACHE_IMAGE_NAME := memcache_$(APP_NAME)
+NGINX_DOCKER_CONF := ${DOCKER_FILE_DIR}/$(APP_IMAGE_NAME).conf
+
 #WILL BE THE VEMV NAME IN PROJECT CREATE FOLDER
 VENV := venv_$(APP_NAME)
 #GIT REPO SSH ACCESS PATH
