@@ -11,8 +11,8 @@ case "$OSTYPE" in
   *)        echo "unknown: $OSTYPE"; exit 1 ;;
 esac
 APP_PORT=${2:-8000}
-STATIC_FILES=${3:-'/home/app/web/static/'}
-MEDIA_FILES=${4:-'/home/app/web/media/'}
+STATIC_FILES=${3:-'/home/myuser/web/static/'}
+MEDIA_FILES=${4:-'/home/myuser/web/media/'}
 
 if [[ "$1" != "" ]]; then
     DOCKER_HOST_NAME=$(echo $1)

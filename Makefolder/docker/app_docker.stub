@@ -26,8 +26,8 @@ RUN useradd --create-home myuser
 COPY --from=builder-image /home/myuser/venv /home/myuser/venv
 
 USER myuser
-RUN mkdir /home/app/web
-WORKDIR /home/app/web
+RUN mkdir /home/myuser/web
+WORKDIR /home/myuser/web
 COPY ../. .
 
 #NOT FOR THIS AUTOMATION

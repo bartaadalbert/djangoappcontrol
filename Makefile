@@ -173,8 +173,8 @@ DOCKER_NETWORK := $(APP_NAME)_net
 #PLEASE USE CERFULLY, YU NEED TO CHANGE IF YOUR APP ANME HAS . LIKE api.control
 SUBDOMAIN_NAME := $(APP_NAME)
 GUNICORN_COMMAND := "gunicorn --bind 0.0.0.0:8000 --workers 2 --threads 2 --worker-tmp-dir /dev/shm $(APP_NAME).wsgi:application"
-STATIC_FILES := /home/app/web/static/
-MEDIA_FILES := /home/app/web/media/
+STATIC_FILES := /home/myuser/web/static/
+MEDIA_FILES := /home/myuser/web/media/
 DJANGO_ALLOWED_HOSTS := localhost 127.0.0.1 [::1] $(SUBDOMAIN)
 SQL_ENGINE := django.db.backends.postgresql
 SQL_DATABASE := $(APP_NAME)_db$(DEV_MODE)
