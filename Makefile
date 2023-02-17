@@ -12,7 +12,7 @@ GREEN = "\033[0;32m"
 BLUE = "\033[0;34m"
 STR_LENGTH := 121
 # RAND_STR :=$(shell echo | uuidgen)$(shell openssl rand -base64 32)$(shell echo | uuidgen)
-RAND_STR := $(shell LC_ALL=C tr -dc 'A-Za-z0-9!,-.+?:@=^_~' </dev/urandom | head -c $(STR_LENGTH))
+RAND_STR := $(shell LC_ALL=C tr -dc 'A-Za-z0-9!,-.+?:@^_~' </dev/urandom | head -c $(STR_LENGTH))
 # Green text for "printf"
 _SUCCESS := "\033[32m[%s]\033[0m %s\n"
 # Red text for "printf"
