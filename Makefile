@@ -268,6 +268,7 @@ preconfig: ## Add all needed files
 		echo NGINX_IMAGE_NAME=$(NGINX_IMAGE_NAME) >> $(APP_NAME)/.env;\
 		echo PORT_NGINX=$(PORT_NGINX) >> $(APP_NAME)/.env;\
 		echo DOCKER_NETWORK=$(DOCKER_NETWORK) >> $(APP_NAME)/.env;\
+		echo GUNICORN_COMMAND=$(GUNICORN_COMMAND) >> $(APP_NAME)/.env;\
 	else\
 		echo $(RED)"The app folder $(APP_NAME) not exist, cant add configs";\
 	fi
