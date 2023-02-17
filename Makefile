@@ -80,7 +80,7 @@ REMOTE_HOST := jsonsmile.com
 #DEVELOP docker app config file
 APP_DOCKERFILE := ${DOCKER_FILE_DIR}/dev.Dockerfile
 #DEVELOP docker nginx config file
-NGINX_DOCKERFILE := ${DOCKER_FILE_DIR}/dev.nginx_Dockerfile
+NGINX_DOCKERFILE := ${DOCKER_FILE_DIR}/dev.nginx.Dockerfile
 #DEVELOP docker-compose yml file
 APP_COMPOSEFILE := ${DOCKER_FILE_DIR}/dev.docker-compose.yml
 #DEVELOP ENV FILE
@@ -99,11 +99,14 @@ FINAL_PORT := 8008
 #INSIDE PORT NOT RECOMMENDED TO CHANGE
 PORT_APP := 127.0.0.1:$(FINAL_PORT):8000
 # Nginx outside port from docker container
-PORT_NGINX := 127.0.0.1:8888:80
+PORT_NGINX_FINAL := 8888
+PORT_NGINX := 127.0.0.1:$(PORT_NGINX_FINAL):80
 # Redis outside port with def inside port
-PORT_REDIS := 127.0.0.1:7379:6379
+PORT_REDIS_FINAL := 7379
+PORT_REDIS := 127.0.0.1:$(PORT_REDIS_FINAL):6379
 # Posgres outside and docker inside port
-PORT_PSQ := 127.0.0.1:6543:5432
+PORT_PSQ_FINAL := 6543
+PORT_PSQ := 127.0.0.1:$(PORT_PSQ_FNAL):5432
 #Memcache outside and inside port
 PORT_MEMCACHE := 127.0.0.1:22322:11211
 #THIS IS USEFULL IF YOU HAVE DOMAIN NAME AND SERVER IP
@@ -114,7 +117,8 @@ APP_NAME := ipinfo
 START_APP_NAME := control
 REMOTE_HOST := jsonsmile.com
 APP_DOCKERFILE := ${DOCKER_FILE_DIR}/prod.Dockerfile
-NGINX_DOCKERFILE := ${DOCKER_FILE_DIR}/prod.nginx_Dockerfile
+NGINX_DOCKERFILE := ${DOCKER_FILE_DIR}/prod.nginx.Dockerfile
+NGINX_DOCKER_CONF := ${DOCKER_FILE_DIR}/$(APP_IMAGE_NAME).conf
 APP_COMPOSEFILE := prod.docker-compose.yml
 DOCKER_APP_ENV := ${DOCKER_FILE_DIR}/.env.prod
 DOCKER_DB_ENV := ${DOCKER_FILE_DIR}/.env.prod.db
@@ -123,9 +127,12 @@ CONTEXT_DESCRIPTION := production
 CONTEXT_HOST := host=ssh://root@jsonsmile.com
 FINAL_PORT := 4004
 PORT_APP := 127.0.0.1:$(FINAL_PORT):8000
-PORT_NGINX := 127.0.0.1:4444:80 
-PORT_REDIS := 127.0.0.1:6379:6379
-PORT_PSQ := 127.0.0.1:5432:5432
+PORT_NGINX_FINAL := 4444
+PORT_NGINX := 127.0.0.1:$(PORT_NGINX_FINAL):80
+PORT_REDIS_FINAL := 6379
+PORT_REDIS := 127.0.0.1:$(PORT_REDIS_FINAL):6379
+PORT_PSQ_FINAL := 5432
+PORT_PSQ := 127.0.0.1:$(PORT_PSQ_FINAL):5432
 PORT_MEMCACHE := 127.0.0.1:21212:11211
 DOMAIN := $(REMOTE_HOST)
 endif
@@ -163,9 +170,21 @@ PATH_TO_PROJECT := $(APP_NAME)
 DOCKER_NETWORK := $(APP_NAME)_net
 #PLEASE USE CERFULLY, YU NEED TO CHANGE IF YOUR APP ANME HAS . LIKE api.control
 SUBDOMAIN_NAME := $(APP_NAME)
-GUNICORN_COMMAND := "gunicorn --bind 0.0.0.0:8000 --workers 2 --worker-tmp-dir /dev/shm $(APP_NAME).wsgi:application"
+GUNICORN_COMMAND := "gunicorn --bind 0.0.0.0:8000 --workers 2 --threads 2 --worker-tmp-dir /dev/shm $(APP_NAME).wsgi:application"
 STATIC_FILES := /home/app/web/static/
 MEDIA_FILES := /home/app/web/media/
+DJANGO_ALLOWED_HOSTS := localhost 127.0.0.1 [::1] $(SUBDOMAIN)
+SQL_ENGINE := django.db.backends.postgresql
+SQL_DATABASE := $(APP_NAME)_db$(DEV_MODE)
+SQL_USER := $(shell uuidgen | sed 's/[-]//g' | head -c 20;)
+SQL_PASSWORD := $(shell LC_ALL=C tr -dc 'A-Za-z0-9!,-.+?:@=^_~' </dev/urandom | head -c 32)
+# SQL_PASSWORD := $(shell openssl rand -base64 32)
+SQL_HOST := $(DB_IMAGE_NAME)
+SQL_PORT := $(PORT_PSQ_FINAL)
+DATABASE := postgres
+POSTGRES_USER := $(SQL_USER)
+POSTGRES_PASSWORD := $(SQL_PASSWORD)
+POSTGRES_DB := $(SQL_DATABASE)
 
 define my_func
     $(eval $@_PROTOCOL = "https:"")
@@ -207,11 +226,23 @@ file_check: ## CHECK IF FILE EXISTING in MAIN DEFF_MAKER OR CHANGE THE PATH_TO_F
 preconfig: ## Add all needed files
 	@if [[ -d $(APP_NAME) ]]; then \
 		mkdir $(APP_NAME)/$(DOCKER_FILE_DIR);\
-		touch $(APP_NAME)/$(APP_DOCKERFILE);\
-		touch $(APP_NAME)/$(NGINX_DOCKERFILE);\
-		touch $(APP_NAME)/$(APP_COMPOSEFILE);\
-		touch $(APP_NAME)/$(DOCKER_APP_ENV);\
-		touch $(APP_NAME)/$(DOCKER_DB_ENV);\
+		cp $(DEFF_MAKER)docker/app_docker.stub $(APP_NAME)/$(APP_DOCKERFILE);\
+		cp $(DEFF_MAKER)docker/nginx_docker.stub $(APP_NAME)/$(NGINX_DOCKERFILE);\
+		cp $(DEFF_MAKER)docker/app_docker_compose.stub $(APP_NAME)/$(APP_COMPOSEFILE);\
+		cp $(DEFF_MAKER)/docker/$(APP_IMAGE_NAME).conf $(APP_NAME)/$(NGINX_DOCKER_CONF);\
+		echo DEBUG=$(DEV_MODE) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
+		echo SECRET_KEY=$(RAND_STR) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
+		echo DJANGO_ALLOWED_HOSTS=$(DJANGO_ALLOWED_HOSTS) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
+		echo SQL_ENGINE=$(SQL_ENGINE) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
+		echo SQL_DATABASE=$(SQL_DATABASE) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
+		echo SQL_USER=$(SQL_USER) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
+		echo SQL_PASSWORD=$(SQL_PASSWORD) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
+		echo SQL_HOST=$(SQL_HOST) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
+		echo SQL_PORT=$(SQL_PORT) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
+		echo DATABASE=$(DATABASE) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
+		echo POSTGRES_USER=$(POSTGRES_USER) >> $(APP_NAME)/$(DOCKER_DB_ENV);\
+		echo POSTGRES_PASSWORD=$(POSTGRES_PASSWORD) >> $(APP_NAME)/$(DOCKER_DB_ENV);\
+		echo POSTGRES_DB=$(POSTGRES_DB) >> $(APP_NAME)/$(DOCKER_DB_ENV);\
 	else\
 		echo $(RED)"The app folder $(APP_NAME) not exist, cant add configs";\
 	fi
@@ -331,8 +362,9 @@ just_venv: checker ## Create just venv
 	@echo $(BLUE)"The venv was created  with name $(VENV)"
 	@make create_pm2
 	@make create_network
-	@make preconfig
 	@make create_docker_nginx
+	@make preconfig
+	
 
 
 create_requirements: ## USE path to project and create requirements txt for your python app
@@ -368,8 +400,8 @@ create_app: checker## Create venv with Django startproject, and delete venv if e
 	fi
 	@cp $(DEF_REQUIREMENTS) $(APP_NAME)/requirements.txt
 	@make create_network
-	@make preconfig
 	@make create_docker_nginx
+	@make preconfig
 
 add_installed_apps: checker ## Add in django settings installed apps new app
 	$(shell $(SCRIPT_DJ_INSTALLED_APPS) $(START_APP_NAME) $(APP_NAME))
@@ -498,8 +530,10 @@ check:
 	echo $(MODIFY)
 	$(eval MODIFY=qwerty)
 	echo $(MODIFY)	
+
 bb:
-	@echo $(RAND_STR) 
+	@echo $(STR)
+ 
 
 
 build: ## Build the docker image
