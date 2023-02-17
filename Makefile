@@ -192,6 +192,7 @@ DJANGO_SUPERUSER_PASSWORD := $(shell LC_ALL=C tr -dc 'A-Za-z0-9!,-.+?:@=^_~' </d
 DJANGO_SUPERUSER_EMAIL := admin@$(DOMAIN)
 DOCKER_COMPOSE := docker-compose
 DOCKER_COMPOSE_FILE := $(APP_NAME)/$(APP_COMPOSEFILE)
+DOCKER_CHANGE_COMPOSE_FILE := $(DEFF_MAKER)docker/$(APP_IMAGE_NAME).conf
 
 define my_func
     $(eval $@_PROTOCOL = "https:"")
@@ -243,9 +244,9 @@ preconfig: ## Add all needed files
 		cp $(DEFF_MAKER)/docker/$(APP_IMAGE_NAME).conf $(APP_NAME)/$(NGINX_DOCKER_CONF);\
 		cp $(DEFF_MAKER)/docker/start-server.sh $(APP_NAME)/$(DOCKER_FILE_DIR)/start-server.sh;\
 		cp $(DEFF_MAKER)/docker/entripoint.sh $(APP_NAME)/$(DOCKER_FILE_DIR)/entripoint.sh;\
-		if [[ ! -f $(APP_NAME)/$(DOCKER_FILE_DIR)/$(APP_IMAGE_NAME)".compose" ]]; then \
-			make set_compose
-		fi
+		if [[ ! -f $(DOCKER_CHANGE_COMPOSE_FILE) ]]; then \
+			make set_compose; \
+		fi \
 		cp $(DEFF_MAKER)docker/app_docker_compose.stub $(APP_NAME)/$(APP_COMPOSEFILE);\
 		echo DEBUG=$(DEV_MODE) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
 		echo SECRET_KEY=$(RAND_STR) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
