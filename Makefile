@@ -81,7 +81,8 @@ REMOTE_HOST := jsonsmile.com
 #DEVELOP docker app config file
 APP_DOCKERFILE := ${DOCKER_FILE_DIR}/dev.Dockerfile
 #DEVELOP docker nginx config file
-NGINX_DOCKERFILE := ${DOCKER_FILE_DIR}/dev.nginx.Dockerfile
+NGINX_DOCKERFILE := ${DOCKER_FILE_DIR}/nginx/
+NGINX_DOCKERFILE_NAME := ${DOCKER_FILE_DIR}/nginx/Dockerfile
 #DEVELOP docker-compose yml file
 APP_COMPOSEFILE := dev.docker-compose.yml
 #DEVELOP ENV FILE
@@ -118,7 +119,9 @@ APP_NAME := ipinfo
 START_APP_NAME := control
 REMOTE_HOST := jsonsmile.com
 APP_DOCKERFILE := ${DOCKER_FILE_DIR}/prod.Dockerfile
-NGINX_DOCKERFILE := ${DOCKER_FILE_DIR}/prod.nginx.Dockerfile
+# NGINX_DOCKERFILE := ${DOCKER_FILE_DIR}/prod.nginx.Dockerfile
+NGINX_DOCKERFILE := ${DOCKER_FILE_DIR}/nginx/
+NGINX_DOCKERFILE_NAME := ${DOCKER_FILE_DIR}/nginx/Dockerfile
 APP_COMPOSEFILE := prod.docker-compose.yml
 DOCKER_APP_ENV := ${DOCKER_FILE_DIR}/.env.prod
 DOCKER_DB_ENV := ${DOCKER_FILE_DIR}/.env.prod.db
@@ -239,8 +242,9 @@ set_compose: ## Enabel set fro us docker-compose file
 preconfig: ## Add all needed files
 	@if [[ -d $(APP_NAME) ]]; then \
 		mkdir $(APP_NAME)/$(DOCKER_FILE_DIR);\
+		mkdir $(APP_NAME)/$(DOCKER_FILE_DIR)/nginx;\
 		cp $(DEFF_MAKER)docker/app_docker.stub $(APP_NAME)/$(APP_DOCKERFILE);\
-		cp $(DEFF_MAKER)docker/nginx_docker.stub $(APP_NAME)/$(NGINX_DOCKERFILE);\
+		cp $(DEFF_MAKER)docker/nginx_docker.stub $(APP_NAME)/$(NGINX_DOCKERFILE_NAME);\
 		cp $(DEFF_MAKER)/docker/$(APP_IMAGE_NAME).conf $(APP_NAME)/$(NGINX_DOCKER_CONF);\
 		cp $(DEFF_MAKER)/docker/start-server.sh $(APP_NAME)/$(DOCKER_FILE_DIR)/start-server.sh;\
 		cp $(DEFF_MAKER)/docker/entripoint.sh $(APP_NAME)/$(DOCKER_FILE_DIR)/entripoint.sh;\
