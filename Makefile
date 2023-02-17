@@ -11,7 +11,8 @@ GREEN = "\033[0;32m"
 # Blue text for echo
 BLUE = "\033[0;34m"
 STR_LENGTH := 121
-RAND_STR :=$(shell echo | uuidgen)$(shell openssl rand -base64 32)$(shell echo | uuidgen)
+# RAND_STR :=$(shell echo | uuidgen)$(shell openssl rand -base64 32)$(shell echo | uuidgen)
+RAND_STR := $(shell LC_ALL=C tr -dc 'A-Za-z0-9!,-.+?:@=^_~' </dev/urandom | head -c $(STR_LENGTH))
 # Green text for "printf"
 _SUCCESS := "\033[32m[%s]\033[0m %s\n"
 # Red text for "printf"
@@ -349,6 +350,7 @@ just_venv: checker ## Create just venv
 			echo "$(APP_NAME)/$(START_APP_NAME)/__pycache__" >> .gitignore;\
 			echo "$(APP_NAME)/$(APP_NAME)/settings.py" >> .gitignore;\
 			echo "$(APP_NAME)/.env*" >> .gitignore;\
+			echo "$(APP_NAME)/$(DOCKER_FILE_DIR)" >> .gitignore;\
 			printf $(_DANGER) "TRY TO CREATE REQUIREMENTS?" ; \
 			printf $(_DANGER) "TRY TO CREATE REQUIREMENTS?" ; \
 			read -p "CREATE REQUIREMENTS? [y/N] " ans && ans=$${ans:-N} ; \
@@ -387,6 +389,7 @@ create_app: checker## Create venv with Django startproject, and delete venv if e
 		echo "$(APP_NAME)/$(START_APP_NAME)/__pycache__" >> .gitignore;\
 		echo "$(APP_NAME)/$(APP_NAME)/settings.py" >> .gitignore;\
 		echo "$(APP_NAME)/.env*" >> .gitignore;\
+		echo "$(APP_NAME)/$(DOCKER_FILE_DIR)" >> .gitignore;\
 		source $(VENV)/bin/activate && django-admin startproject $(APP_NAME) && make create_pm2 && cd $(APP_NAME) && python3 manage.py startapp $(START_APP_NAME);\
 		echo $(BLUE)"The app folder $(APP_NAME) created with startapp $(START_APP_NAME) successfully";\
 	else\
