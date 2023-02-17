@@ -243,7 +243,7 @@ preconfig: ## Add all needed files
 		cp $(DEFF_MAKER)/docker/$(APP_IMAGE_NAME).conf $(APP_NAME)/$(NGINX_DOCKER_CONF);\
 		cp $(DEFF_MAKER)/docker/start-server.sh $(APP_NAME)/$(DOCKER_FILE_DIR)/start-server.sh;\
 		cp $(DEFF_MAKER)/docker/entripoint.sh $(APP_NAME)/$(DOCKER_FILE_DIR)/entripoint.sh;\
-		if [[ ! -f $(APP_NAME)/$(DOCKER_FILE_DIR)/$(APP_IMAGE_NAME).compose) ]]; then \
+		if [[ ! -f $(APP_NAME)/$(DOCKER_FILE_DIR)/$(APP_IMAGE_NAME)".compose" ]]; then \
 			make set_compose
 		fi
 		cp $(DEFF_MAKER)docker/app_docker_compose.stub $(APP_NAME)/$(APP_COMPOSEFILE);\
