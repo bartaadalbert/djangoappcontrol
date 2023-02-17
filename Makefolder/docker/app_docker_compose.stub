@@ -40,7 +40,9 @@ services:
     hostname: ${REDIS_IMAGE_NAME}
 
   {{NGINX_IMAGE_NAME}}:
-    build: ${NGINX_DOCKERFILE}
+    build:
+      dockerfile: ${NGINX_DOCKERFILE}
+    command: ${GUNICORN_COMMAND}
     hostname: ${NGINX_IMAGE_NAME}
     volumes:
       - static_volume:${STATIC_FILES}
