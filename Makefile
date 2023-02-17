@@ -81,8 +81,9 @@ REMOTE_HOST := jsonsmile.com
 APP_DOCKERFILE := ${DOCKER_FILE_DIR}/dev.Dockerfile
 #DEVELOP docker nginx config file
 NGINX_DOCKERFILE := ${DOCKER_FILE_DIR}/dev.nginx.Dockerfile
+NGINX_DOCKER_CONF := ${DOCKER_FILE_DIR}/$(APP_IMAGE_NAME).conf
 #DEVELOP docker-compose yml file
-APP_COMPOSEFILE := ${DOCKER_FILE_DIR}/dev.docker-compose.yml
+APP_COMPOSEFILE := dev.docker-compose.yml
 #DEVELOP ENV FILE
 DOCKER_APP_ENV := ${DOCKER_FILE_DIR}/.env.dev
 #DOCKER DB ENV
