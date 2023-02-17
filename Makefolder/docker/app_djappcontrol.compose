@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  {{APP_IMAGE_NAME}}:
+  app_djappcontrol:
     build:
       context: .
       dockerfile: ${APP_DOCKERFILE}
@@ -18,7 +18,7 @@ services:
     depends_on:
       - ${DB_IMAGE_NAME}
       - ${REDIS_IMAGE_NAME}
-  {{DB_IMAGE_NAME}}:
+  db_djappcontrol:
     image: postgres:13.0-alpine
     hostname: ${DB_IMAGE_NAME}
     volumes:
@@ -29,7 +29,7 @@ services:
     ports:
       - ${PORT_PSQ}
 
-  {{REDIS_IMAGE_NAME}}:
+  redis_djappcontrol:
     restart: always
     image: redis:latest
     ports:
@@ -39,7 +39,7 @@ services:
     container_name: ${REDIS_IMAGE_NAME}
     hostname: ${REDIS_IMAGE_NAME}
 
-  {{NGINX_IMAGE_NAME}}:
+  nginx_djappcontrol:
     build: ${NGINX_DOCKERFILE}
     hostname: ${NGINX_IMAGE_NAME}
     volumes:

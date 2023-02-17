@@ -53,6 +53,7 @@ SCRIPT_GIT := $(DEFF_MAKER)git/gitrepo.sh
 SCRIPT_DJ_SETTINGS := $(DEFF_MAKER)django/djsettings.sh
 SCRIPT_DJ_URLS := $(DEFF_MAKER)django/djurls.sh
 SCRIPT_DJ_INSTALLED_APPS := $(DEFF_MAKER)django/djapp.sh
+SCRIPT_CHANGE_COMPOSE := $(DEFF_MAKER)/docker/change_compose.sh
 
 # DEFAULT FEATURE!!!! 1.0.0 can use major/feature/bug
 VERSION_ARGUMENT := feature
@@ -229,15 +230,23 @@ file_check: ## CHECK IF FILE EXISTING in MAIN DEFF_MAKER OR CHANGE THE PATH_TO_F
 		printf $(_SUCCESS) "FILE EXIST"; \
 	fi
 
+set_compose: ## Enabel set fro us docker-compose file
+	@echo $(BLUE)The compose file will change
+	$(shell $(SCRIPT_CHANGE_COMPOSE) $(APP_IMAGE_NAME) $(DB_IMAGE_NAME) $(REDIS_IMAGE_NAME) $(NGINX_IMAGE_NAME))
+	@echo $(BLUE)The compose file was set
+
 preconfig: ## Add all needed files
 	@if [[ -d $(APP_NAME) ]]; then \
 		mkdir $(APP_NAME)/$(DOCKER_FILE_DIR);\
 		cp $(DEFF_MAKER)docker/app_docker.stub $(APP_NAME)/$(APP_DOCKERFILE);\
 		cp $(DEFF_MAKER)docker/nginx_docker.stub $(APP_NAME)/$(NGINX_DOCKERFILE);\
-		cp $(DEFF_MAKER)docker/app_docker_compose.stub $(APP_NAME)/$(APP_COMPOSEFILE);\
 		cp $(DEFF_MAKER)/docker/$(APP_IMAGE_NAME).conf $(APP_NAME)/$(NGINX_DOCKER_CONF);\
 		cp $(DEFF_MAKER)/docker/start-server.sh $(APP_NAME)/$(DOCKER_FILE_DIR)/start-server.sh;\
 		cp $(DEFF_MAKER)/docker/entripoint.sh $(APP_NAME)/$(DOCKER_FILE_DIR)/entripoint.sh;\
+		if [[ ! -f $(APP_NAME)/$(DOCKER_FILE_DIR)/$(APP_IMAGE_NAME).compose) ]]; then \
+			make set_compose
+		fi
+		cp $(DEFF_MAKER)docker/app_docker_compose.stub $(APP_NAME)/$(APP_COMPOSEFILE);\
 		echo DEBUG=$(DEV_MODE) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
 		echo SECRET_KEY=$(RAND_STR) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
 		echo DJANGO_ALLOWED_HOSTS=$(DJANGO_ALLOWED_HOSTS) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
