@@ -108,6 +108,7 @@ PORT_REDIS_FINAL := 7379
 PORT_REDIS := 127.0.0.1:$(PORT_REDIS_FINAL):6379
 # Posgres outside and docker inside port
 PORT_PSQ_FINAL := 6543
+PORT_PSQ_DEF := 5432
 PORT_PSQ := 127.0.0.1:$(PORT_PSQ_FNAL):5432
 #Memcache outside and inside port
 PORT_MEMCACHE := 127.0.0.1:22322:11211
@@ -275,7 +276,7 @@ preconfig: ## Add all needed files
 		echo DB_IMAGE_NAME=$(DB_IMAGE_NAME) >> $(APP_NAME)/.env;\
 		echo REDIS_IMAGE_NAME=$(REDIS_IMAGE_NAME) >> $(APP_NAME)/.env;\
 		echo DOCKER_DB_ENV=$(DOCKER_DB_ENV) >> $(APP_NAME)/.env;\
-		echo PORT_PSQ=$(PORT_PSQ) >> $(APP_NAME)/.env;\
+		echo PORT_PSQ=$(PORT_PSQ_DEF) >> $(APP_NAME)/.env;\
 		echo PORT_REDIS=$(PORT_REDIS) >> $(APP_NAME)/.env;\
 		echo NGINX_IMAGE_NAME=$(NGINX_IMAGE_NAME) >> $(APP_NAME)/.env;\
 		echo PORT_NGINX=$(PORT_NGINX) >> $(APP_NAME)/.env;\
@@ -596,10 +597,11 @@ restart: ## Restart all or c=<name> containers
 logs: ## Show logs for all or c=<name> containers
 	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) logs --tail=100 -f $(c)
 
-clean: confirm ## Clean all data
+clean: checker ## Clean all data
 	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) down
 
-
+migrate: ## MIgrate DJANGO
+	@$(DOCKER_COMPOSE) exec $(APP_IMAGE_NAME) python manage.py migrate --noinput
 
 	
 
