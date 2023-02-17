@@ -192,7 +192,7 @@ DJANGO_SUPERUSER_PASSWORD := $(shell LC_ALL=C tr -dc 'A-Za-z0-9!,-.+?:@=^_~' </d
 DJANGO_SUPERUSER_EMAIL := admin@$(DOMAIN)
 DOCKER_COMPOSE := docker-compose
 DOCKER_COMPOSE_FILE := $(APP_NAME)/$(APP_COMPOSEFILE)
-DOCKER_CHANGE_COMPOSE_FILE := $(DEFF_MAKER)docker/$(APP_IMAGE_NAME).conf
+DOCKER_CHANGE_COMPOSE_FILE := $(DEFF_MAKER)docker/$(APP_IMAGE_NAME).compose
 
 define my_func
     $(eval $@_PROTOCOL = "https:"")
