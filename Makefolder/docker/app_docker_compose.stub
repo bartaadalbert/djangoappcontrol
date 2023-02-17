@@ -41,8 +41,12 @@ services:
 
   {{NGINX_IMAGE_NAME}}:
     image: nginx:1.23-alpine
+    build:
+      context: .
+      dockerfile: ${NGINX_DOCKERFILE}
     command: rm /etc/nginx/conf.d/default.conf && cp *.conf /etc/nginx/conf.d
     hostname: ${NGINX_IMAGE_NAME}
+    container_name: ${NGINX_IMAGE_NAME}
     volumes:
       - static_volume:${STATIC_FILES}
       - media_volume:${MEDIA_FILES}
