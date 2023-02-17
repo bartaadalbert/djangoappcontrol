@@ -187,6 +187,9 @@ DATABASE := postgres
 POSTGRES_USER := $(SQL_USER)
 POSTGRES_PASSWORD := $(SQL_PASSWORD)
 POSTGRES_DB := $(SQL_DATABASE)
+DJANGO_SUPERUSER_USERNAME := $(shell uuidgen | sed 's/[-]//g' | head -c 20;)
+DJANGO_SUPERUSER_PASSWORD := $(shell LC_ALL=C tr -dc 'A-Za-z0-9!,-.+?:@=^_~' </dev/urandom | head -c 32)
+DJANGO_SUPERUSER_EMAIL := admin@$(DOMAIN)
 
 define my_func
     $(eval $@_PROTOCOL = "https:"")
@@ -232,6 +235,8 @@ preconfig: ## Add all needed files
 		cp $(DEFF_MAKER)docker/nginx_docker.stub $(APP_NAME)/$(NGINX_DOCKERFILE);\
 		cp $(DEFF_MAKER)docker/app_docker_compose.stub $(APP_NAME)/$(APP_COMPOSEFILE);\
 		cp $(DEFF_MAKER)/docker/$(APP_IMAGE_NAME).conf $(APP_NAME)/$(NGINX_DOCKER_CONF);\
+		cp $(DEFF_MAKER)/docker/start-server.sh $(APP_NAME)/$(DOCKER_FILE_DIR)/start-server.sh;\
+		cp $(DEFF_MAKER)/docker/entripoint.sh $(APP_NAME)/$(DOCKER_FILE_DIR)/entripoint.sh;\
 		echo DEBUG=$(DEV_MODE) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
 		echo SECRET_KEY=$(RAND_STR) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
 		echo DJANGO_ALLOWED_HOSTS=$(DJANGO_ALLOWED_HOSTS) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
@@ -242,6 +247,9 @@ preconfig: ## Add all needed files
 		echo SQL_HOST=$(SQL_HOST) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
 		echo SQL_PORT=$(SQL_PORT) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
 		echo DATABASE=$(DATABASE) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
+		echo DJANGO_SUPERUSER_USERNAME=$(DJANGO_SUPERUSER_USERNAME) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
+		echo DJANGO_SUPERUSER_PASSWORD=$(DJANGO_SUPERUSER_PASSWORD) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
+		echo DJANGO_SUPERUSER_EMAIL=$(DJANGO_SUPERUSER_EMAIL) >> $(APP_NAME)/$(DOCKER_APP_ENV);\
 		echo POSTGRES_USER=$(POSTGRES_USER) >> $(APP_NAME)/$(DOCKER_DB_ENV);\
 		echo POSTGRES_PASSWORD=$(POSTGRES_PASSWORD) >> $(APP_NAME)/$(DOCKER_DB_ENV);\
 		echo POSTGRES_DB=$(POSTGRES_DB) >> $(APP_NAME)/$(DOCKER_DB_ENV);\
