@@ -6,7 +6,8 @@ REDIS_LOCATION=${3:-"127.0.0.0"}
 DEFF_MAKER=${4:-"Makefolder/django"}
 RED='\033[0;31m'
 # DJANGO_INSECURE_KEY=$(LC_ALL=C tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' </dev/urandom | head -c 64 ; echo >&1)
-DJANGO_INSECURE_KEY=$(cat /dev/urandom | LC_ALL=C tr -dc 'A-Za-z0-9!"#$%&()*+,-.:=?@^_~' | head -c 64)
+# DJANGO_INSECURE_KEY=$(cat /dev/urandom | LC_ALL=C tr -dc 'A-Za-z0-9!"#$%&()*+,-.:=?@^_~' | head -c 64)
+DJANGO_INSECURE_KEY=$(uuidgen)
 #LINUX
 # SED=$(which sed)
 #MACOS, brew install gnu-sed
