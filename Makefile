@@ -276,7 +276,7 @@ preconfig: ## Add all needed files
 		echo DB_IMAGE_NAME=$(DB_IMAGE_NAME) >> $(APP_NAME)/.env;\
 		echo REDIS_IMAGE_NAME=$(REDIS_IMAGE_NAME) >> $(APP_NAME)/.env;\
 		echo DOCKER_DB_ENV=$(DOCKER_DB_ENV) >> $(APP_NAME)/.env;\
-		echo PORT_PSQ=$(PORT_PSQ_DEF) >> $(APP_NAME)/.env;\
+		echo PORT_PSQ=$(PORT_PSQ) >> $(APP_NAME)/.env;\
 		echo PORT_REDIS=$(PORT_REDIS) >> $(APP_NAME)/.env;\
 		echo NGINX_IMAGE_NAME=$(NGINX_IMAGE_NAME) >> $(APP_NAME)/.env;\
 		echo PORT_NGINX=$(PORT_NGINX) >> $(APP_NAME)/.env;\
@@ -604,4 +604,5 @@ migrate: ## MIgrate DJANGO
 	@$(DOCKER_COMPOSE) exec $(APP_IMAGE_NAME) python manage.py migrate --noinput
 
 	
+
 
