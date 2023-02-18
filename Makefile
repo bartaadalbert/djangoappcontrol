@@ -198,6 +198,7 @@ DJANGO_SUPERUSER_EMAIL := admin@$(DOMAIN)
 DOCKER_COMPOSE := docker-compose
 DOCKER_COMPOSE_FILE := $(APP_NAME)/$(APP_COMPOSEFILE)
 DOCKER_CHANGE_COMPOSE_FILE := $(DEFF_MAKER)docker/$(APP_IMAGE_NAME).compose
+TIME_ZONE := Europe/Budapest
 
 define my_func
     $(eval $@_PROTOCOL = "https:"")
@@ -284,6 +285,7 @@ preconfig: ## Add all needed files
 		echo DOCKER_NETWORK=$(DOCKER_NETWORK) >> $(APP_NAME)/.env;\
 		echo GUNICORN_COMMAND=$(GUNICORN_COMMAND) >> $(APP_NAME)/.env;\
 		echo NGINX_DOCKERFILE=$(NGINX_DOCKERFILE) >> $(APP_NAME)/.env;\
+		echo TIME_ZONE=$(TIME_ZONE) >> $(APP_NAME)/.env;\
 	else\
 		echo $(RED)"The app folder $(APP_NAME) not exist, cant add configs";\
 	fi
@@ -606,6 +608,9 @@ migrate: ## MIgrate DJANGO
 
 collectstatic: ## GET STATIC FOLDER TO DOCKER APP
 	@docker exec -it $(APP_IMAGE_NAME) python manage.py collectstatic --no-input --clear
+
+create_superuser: ##THSI WILL create django super user
+	@docker exec -it $(APP_IMAGE_NAME) python3 manage.py createsuperuser --no-input
 
 clean_volumes: ## CLEAN DOCKER CREATED VOLUMES BY THIS APP
 	@docker volume rm -f $$(docker volume ls | grep $(APP_NAME))
