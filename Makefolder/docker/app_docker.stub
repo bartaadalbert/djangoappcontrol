@@ -26,8 +26,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y python3.11 pyth
 #RUN mkdir -p /home/myuser
 # create the app user
 #RUN addgroup -S myuser && adduser -S myuser -G myuser
-RUN groupadd -r mygroup && useradd  --create-home myuser -r -g mygroup myuser
-
+#RUN groupadd -r mygroup && useradd  --create-home myuser -r -g mygroup myuser
+RUN useradd --create-home myuser
 
 ENV HOME=/home/myuser
 ENV APP_HOME=/home/myuser/web
@@ -39,7 +39,6 @@ RUN mkdir $APP_HOME/static
 RUN mkdir $APP_HOME/static/admin
 RUN mkdir $APP_HOME/media
 
-#RUN useradd --create-home myuser
 COPY --from=builder-image /home/myuser/venv /home/myuser/venv
 
 # make sure all messages always reach console
@@ -51,7 +50,7 @@ ENV PATH="/home/myuser/venv/bin:$PATH"
 
 COPY ../. $APP_HOME
 
-RUN chown -R  myuser:mygroup $APP_HOME
+RUN chown -R  myuser:myuser $APP_HOME
 
 USER myuser
 
