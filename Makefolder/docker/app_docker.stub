@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y python3.11 pyth
 # create directory for the app user
 RUN mkdir -p /home/myuser
 # create the app user
-RUN addgroup -S myuser && adduser -S myuser -G app
+RUN addgroup -S myuser && adduser -S myuser -G myuser
 
 ENV HOME=/home/myuser
 ENV APP_HOME=/home/myuser/web
