@@ -27,9 +27,13 @@ RUN groupadd -r mygroup && useradd  --create-home myuser -r -g mygroup myuser
 COPY --from=builder-image /home/myuser/venv /home/myuser/venv
 
 USER myuser
-RUN mkdir /home/myuser/web
-RUN chown -R  myuser:mygroup /home/myuser/web
-WORKDIR /home/myuser/web
+ENV APP_HOME=/home/myuser/web
+RUN mkdir $APP_HOME
+RUN mkdir $APP_HOME/static
+RUN mkdir $APP_HOME/static/admin
+RUN mkdir $APP_HOME/mediafil
+RUN chown -R  myuser:mygroup $APP_HOME
+WORKDIR $APP_HOME
 COPY ../. .
 
 #NOT FOR THIS AUTOMATION
