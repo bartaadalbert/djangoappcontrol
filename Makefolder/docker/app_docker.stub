@@ -22,11 +22,13 @@ FROM ubuntu:22.04 AS runner-image
 RUN apt-get update && apt-get install --no-install-recommends -y python3.11 python3-venv && \
 	apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN useradd --create-home myuser
+#RUN useradd --create-home myuser
+RUN groupadd -r mygroup && useradd  --create-home myuser -r -g mygroup myuser
 COPY --from=builder-image /home/myuser/venv /home/myuser/venv
 
 USER myuser
 RUN mkdir /home/myuser/web
+RUN chown myuser:mygroup /home/myuser
 WORKDIR /home/myuser/web
 COPY ../. .
 
