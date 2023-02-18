@@ -44,7 +44,7 @@ ENV PYTHONUNBUFFERED=1
 ENV VIRTUAL_ENV=/home/myuser/venv
 ENV PATH="/home/myuser/venv/bin:$PATH"
 
-COPY ../. .
+COPY ../. $APP_HOME
 
 RUN chown -R  myuser:mygroup $APP_HOME
 
