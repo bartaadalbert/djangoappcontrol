@@ -199,6 +199,7 @@ DOCKER_COMPOSE := docker-compose
 DOCKER_COMPOSE_FILE := $(APP_NAME)/$(APP_COMPOSEFILE)
 DOCKER_CHANGE_COMPOSE_FILE := $(DEFF_MAKER)docker/$(APP_IMAGE_NAME).compose
 TIME_ZONE := UTC+02:00
+LANGUAGE_CODE := en-us
 
 define my_func
     $(eval $@_PROTOCOL = "https:"")
@@ -286,6 +287,7 @@ preconfig: ## Add all needed files
 		echo GUNICORN_COMMAND=$(GUNICORN_COMMAND) >> $(APP_NAME)/.env;\
 		echo NGINX_DOCKERFILE=$(NGINX_DOCKERFILE) >> $(APP_NAME)/.env;\
 		echo TIME_ZONE=$(TIME_ZONE) >> $(APP_NAME)/.env;\
+		echo LANGUAGE_CODE=$(LANGUAGE_CODE) >> $(APP_NAME)/.env;\
 	else\
 		echo $(RED)"The app folder $(APP_NAME) not exist, cant add configs";\
 	fi
