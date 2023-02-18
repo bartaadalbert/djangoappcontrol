@@ -22,12 +22,12 @@ FROM ubuntu:22.04 AS runner-image
 RUN apt-get update && apt-get install --no-install-recommends -y python3.11 python3-venv && \
 	apt-get clean && rm -rf /var/lib/apt/lists/*
 
-#RUN groupadd -r mygroup && useradd  --create-home myuser -r -g mygroup myuser
-
 # create directory for the app user
-RUN mkdir -p /home/myuser
+#RUN mkdir -p /home/myuser
 # create the app user
-RUN addgroup -S myuser && adduser -S myuser -G myuser
+#RUN addgroup -S myuser && adduser -S myuser -G myuser
+RUN groupadd -r mygroup && useradd  --create-home myuser -r -g mygroup myuser
+
 
 ENV HOME=/home/myuser
 ENV APP_HOME=/home/myuser/web
