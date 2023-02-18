@@ -22,25 +22,20 @@ FROM ubuntu:22.04 AS runner-image
 RUN apt-get update && apt-get install --no-install-recommends -y python3.11 python3-venv && \
 	apt-get clean && rm -rf /var/lib/apt/lists/*
 
+RUN groupadd -r mygroup && useradd  --create-home myuser -r -g mygroup myuser
 
+ENV HOME=/home/myuser
 ENV APP_HOME=/home/myuser/web
+
 RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
 RUN mkdir $APP_HOME/static
 RUN mkdir $APP_HOME/static/admin
 RUN mkdir $APP_HOME/media
 
 #RUN useradd --create-home myuser
-#RUN groupadd -r mygroup && useradd  --create-home myuser -r -g mygroup myuser
 COPY --from=builder-image /home/myuser/venv /home/myuser/venv
-
-#USER myuser
-#RUN chown -R  myuser:mygroup $APP_HOME
-
-WORKDIR $APP_HOME
-COPY ../. .
-
-#NOT FOR THIS AUTOMATION
-#EXPOSE 8000
 
 # make sure all messages always reach console
 ENV PYTHONUNBUFFERED=1
@@ -48,6 +43,15 @@ ENV PYTHONUNBUFFERED=1
 # activate virtual environment
 ENV VIRTUAL_ENV=/home/myuser/venv
 ENV PATH="/home/myuser/venv/bin:$PATH"
+
+COPY ../. .
+
+RUN chown -R  myuser:mygroup $APP_HOME
+
+USER myuser
+
+#NOT FOR THIS AUTOMATION
+#EXPOSE 8000
 
 # /dev/shm is mapped to shared memory and should be used for gunicorn heartbeat
 # this will improve performance and avoid random freezes
