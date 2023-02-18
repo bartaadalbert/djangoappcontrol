@@ -602,10 +602,10 @@ clean: checker ## Clean all data
 	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) down
 
 migrate: ## MIgrate DJANGO
-	@$(DOCKER_COMPOSE) exec $(APP_IMAGE_NAME) python manage.py migrate --noinput
+	@docker exec -it $(APP_IMAGE_NAME) python manage.py migrate --noinput
 
 collectstatic: ## GET STATIC FOLDER TO DOCKER APP
-	@$(DOCKER_COMPOSE) exec $(APP_IMAGE_NAME) python manage.py collectstatic --no-input --clear
+	@docker exec -it $(APP_IMAGE_NAME) python manage.py collectstatic --no-input --clear
 
 clean_volumes: ## CLEAN DOCKER CREATED VOLUMES BY THIS APP
 	@docker volume rm -f $$(docker volume ls | grep $(APP_NAME))

@@ -28,7 +28,7 @@ COPY --from=builder-image /home/myuser/venv /home/myuser/venv
 
 USER myuser
 RUN mkdir /home/myuser/web
-RUN chown myuser:mygroup /home/myuser
+RUN chown -R  myuser:mygroup /home/myuser/web
 WORKDIR /home/myuser/web
 COPY ../. .
 
