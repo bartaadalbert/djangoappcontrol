@@ -187,7 +187,7 @@ SQL_USER := $(shell LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32)
 SQL_PASSWORD := $(shell LC_ALL=C tr -dc 'A-Za-z0-9-._' </dev/urandom | head -c 32)
 # SQL_PASSWORD := $(shell openssl rand -base64 32)
 SQL_HOST := $(DB_IMAGE_NAME)
-SQL_PORT := $(PORT_PSQ_DEF)
+SQL_PORT := $(PORT_PSQ_FINAL)
 DATABASE := postgres
 POSTGRES_USER := $(SQL_USER)
 POSTGRES_PASSWORD := $(SQL_PASSWORD)
