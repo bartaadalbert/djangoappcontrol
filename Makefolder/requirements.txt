@@ -10,3 +10,4 @@ psycopg2-binary
 django-redis
 pipreqs
 pytz
+tzdata

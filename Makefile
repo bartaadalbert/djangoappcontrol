@@ -198,7 +198,14 @@ DJANGO_SUPERUSER_EMAIL := admin@$(DOMAIN)
 DOCKER_COMPOSE := docker-compose
 DOCKER_COMPOSE_FILE := $(APP_NAME)/$(APP_COMPOSEFILE)
 DOCKER_CHANGE_COMPOSE_FILE := $(DEFF_MAKER)docker/$(APP_IMAGE_NAME).compose
+TIME_ZONE := Europe/Budapest
 LANGUAGE_CODE := en-us
+NO_IMAGE_TAG := $(VERSION)
+ifeq ($(NO_IMAGE_TAG),"")
+APP_IMAGE_TAG := latest
+else
+APP_IMAGE_TAG := $(VERSION)
+endif
 
 define my_func
     $(eval $@_PROTOCOL = "https:"")
@@ -285,7 +292,9 @@ preconfig: ## Add all needed files
 		echo DOCKER_NETWORK=$(DOCKER_NETWORK) >> $(APP_NAME)/.env;\
 		echo GUNICORN_COMMAND=$(GUNICORN_COMMAND) >> $(APP_NAME)/.env;\
 		echo NGINX_DOCKERFILE=$(NGINX_DOCKERFILE) >> $(APP_NAME)/.env;\
+		echo TIME_ZONE=$(TIME_ZONE) >> $(APP_NAME)/.env;\
 		echo LANGUAGE_CODE=$(LANGUAGE_CODE) >> $(APP_NAME)/.env;\
+		echo APP_IMAGE_TAG=$(APP_IMAGE_TAG) >> $(APP_NAME)/.env;\
 	else\
 		echo $(RED)"The app folder $(APP_NAME) not exist, cant add configs";\
 	fi
@@ -570,6 +579,7 @@ delete_docker_nginx: ##DELETE THE NGINX REVERSE PROXY FOR THIS APP
 	
 
 check:
+	@echo $(APP_IMAGE_TAG)
 	-@echo $(SUBDOMAIN_CSRF)
 	echo $(NGINX_CONF)
 	echo $(MODIFY)
@@ -580,6 +590,9 @@ check:
 build: ## Build the docker image FULL
 	@echo $(CUR_DIR)
 	@echo $(THIS_MAKEFILE)
+
+rebuild: ## Rebuild all or c=<name> containers in foreground
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up -d --build $(c)
 
 up: ## Start all or c=<name> containers in foreground
 	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up $(c)

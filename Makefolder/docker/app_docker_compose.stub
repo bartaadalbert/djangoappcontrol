@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: ${APP_DOCKERFILE}
+      image: ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
     command: ${GUNICORN_COMMAND}
     container_name: ${APP_IMAGE_NAME}
     hostname: ${APP_IMAGE_NAME}
