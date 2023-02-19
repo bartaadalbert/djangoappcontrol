@@ -610,6 +610,7 @@ clean: checker ## Clean all data
 	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) down
 
 migrate: ## MIgrate DJANGO
+	@docker exec -it $(APP_IMAGE_NAME) python manage.py makemigrations --noinput
 	@docker exec -it $(APP_IMAGE_NAME) python manage.py migrate --noinput
 
 collectstatic: ## GET STATIC FOLDER TO DOCKER APP
