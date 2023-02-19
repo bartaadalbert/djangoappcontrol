@@ -160,7 +160,8 @@ NGINX_CONF := $(DEFF_MAKER)nginx/$(APP_NAME).$(DOMAIN).conf
 # THE NGINX CONF FILE
 NGINX_CONF_FILE := $(APP_NAME).$(DOMAIN).conf
 #FOR NGINX REVERSE PROXY 
-PROXY_PASS := http:\/\/127.0.0.1:$(FINAL_PORT)
+# PROXY_PASS := http:\/\/127.0.0.1:$(FINAL_PORT)
+PROXY_PASS := http:\/\/127.0.0.1:$(PORT_NGINX_FINAL)
 #SUBDOMAIN WITH PROJECT NAME WITH OUR DOMAIN NAME
 SUBDOMAIN := $(APP_NAME).$(DOMAIN)
 #EXCEPT THIS URL FROM CSRF CHECKING
@@ -207,13 +208,6 @@ else
 APP_IMAGE_TAG := $(VERSION)
 endif
 
-define my_func
-    $(eval $@_PROTOCOL = "https:"")
-    $(eval $@_HOSTNAME = $(1))
-    $(eval $@_PORT = $(2))
-    echo "${$@_PROTOCOL}//${$@_HOSTNAME}:${$@_PORT}/"
-endef
-
 
 .PHONY: help
 
@@ -232,8 +226,7 @@ checker: ## This check the input enabel.
 		exit 1; \
 	fi
 	@echo 'Next steps...'
-# my-target:
-#     @$(call my_func,"example.com",8000)
+
 
 file_check: ## CHECK IF FILE EXISTING in MAIN DEFF_MAKER OR CHANGE THE PATH_TO_FILE VARIABLE
 	@echo $(PATH_TO_FILE)

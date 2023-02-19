@@ -10,7 +10,7 @@ case "$OSTYPE" in
   linux*)   SED=$(which sed) ;;
   *)        echo "unknown: $OSTYPE"; exit 1 ;;
 esac
-PROXYPASS=${2:-"http://127.0.0.1:8008"}
+PROXYPASS=${2:-"http://127.0.0.1:8888"}
 LISTEN=${3:-80}
 
 # check the domain is valid!

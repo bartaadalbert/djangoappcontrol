@@ -42,6 +42,7 @@ services:
 
   {{NGINX_IMAGE_NAME}}:
     build: ${NGINX_DOCKERFILE}
+    image: ${NGINX_IMAGE_NAME}:${APP_IMAGE_TAG}
     hostname: ${NGINX_IMAGE_NAME}
     container_name: ${NGINX_IMAGE_NAME}
     volumes:
