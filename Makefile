@@ -622,6 +622,9 @@ create_superuser: ##THSI WILL create django super user
 clean_volumes: ## CLEAN DOCKER CREATED VOLUMES BY THIS APP
 	@docker volume rm -f $$(docker volume ls | grep $(APP_NAME))
 
+app_command: ## DOCKER EXEC IN APP IMAGE COMMANDS
+	@docker exec -it $(APP_IMAGE_NAME) $(dc)
+
 
 
 
