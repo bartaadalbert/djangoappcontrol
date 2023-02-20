@@ -141,6 +141,8 @@ PORT_MEMCACHE := 127.0.0.1:21212:11211
 DOMAIN := $(REMOTE_HOST)
 endif
 
+IP := $(shell dig $(DOMAIN) +short @resolver1.opendns.com)
+
 # WILL BE OUR APP DOCKER IMAGE NAME AND HOSTNAME
 APP_IMAGE_NAME := app_$(APP_NAME)
 DB_IMAGE_NAME := db_$(APP_NAME)
@@ -207,7 +209,6 @@ APP_IMAGE_TAG := latest
 else
 APP_IMAGE_TAG := $(VERSION)
 endif
-
 
 .PHONY: help
 
@@ -344,7 +345,7 @@ delete_nginx: checker ## Delete nginx config with conf name
 	@echo $(YELLOW)The nginx config $(NGINX_CONF) was deleted
 
 create_subdomain: checker## This will create a subdomain nam=app_name in our main domain, 4 param is a specific IP
-	$(shell $(SCRIPT_GDD) $(DOMAIN) $(SUBDOMAIN_NAME))
+	$(shell $(SCRIPT_GDD) $(DOMAIN) $(SUBDOMAIN_NAME) $(IP))
 	@echo $(BLUE)"subdomain was created $(SUBDOMAIN_NAME).$(REMOTE_HOST)"
 
 delete_subdomain: checker ## Delete the subdomain with this app_name
