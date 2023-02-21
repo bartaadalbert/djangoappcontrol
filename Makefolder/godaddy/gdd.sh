@@ -4,8 +4,8 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m' 
 DOMAIN=$1
 SUB_DOMAIN=$2
-GODADDY_API_KEY='e5XqFzmYjSic_LP1zsNHDnutexzQ8ZbCUeJ'
-GODADDY_API_SECRET='HRTKMo6tx78DdkkeUm9FYx'
+GODADDY_API_KEY='GODADDY_API_KEY'
+GODADDY_API_SECRET='GODADDY_API_SECRET'
 # Get IP Address
 # DEF_IP=`dig $DOMAIN +short @resolver1.opendns.com`
 
@@ -14,6 +14,16 @@ CURL_EXTION=${4:-"PUT"}
 
 if [ -z $1 ] || [ -z $2 ]; then
 	echo -e "${RED}Domain or subdomain not given";
+	exit 1;
+fi
+
+if [ $GODADDY_API_KEY == ""] || [ $GODADDY_API_KEY == "GODADDY_API_KEY" ] ; then
+	printf "${RED}GDD API_KEY NOT SET";
+	exit 1;
+fi
+
+if [ $GODADDY_API_SECRET == ""] || [ $GODADDY_API_SECRET == "GODADDY_API_SECRET" ] ; then
+	printf "${RED}GDD API_SECRET NOT SET";
 	exit 1;
 fi
 

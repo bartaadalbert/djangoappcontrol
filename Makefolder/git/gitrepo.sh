@@ -3,12 +3,22 @@
 RED='\033[0;31m'
 YELLOW='\033[1;33m' 
 APP_NAME=$1
-OWNER=bartaadalbert
-GIT_ACCESS_TOKEN=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
+OWNER="OWNER"
+GIT_ACCESS_TOKEN="GIT_ACCESS_TOKEN"
 CURL_EXTION=${2:-"POST"}
 
 if [ -z $1 ] ; then
 	echo -e "${RED}APP NAME not given";
+	exit 1;
+fi
+
+if [ $OWNER == ""] || [ $OWNER == "OWNER" ] ; then
+	printf "${RED}GIT OWNER NOT SET";
+	exit 1;
+fi
+
+if [ $GIT_ACCESS_TOKEN == ""] || [ $GIT_ACCESS_TOKEN == "GIT_ACCESS_TOKEN" ] ; then
+	echo -e "${RED}GIT TOKEN NOT SET";
 	exit 1;
 fi
 
