@@ -1,0 +1,64 @@
+FROM ubuntu:22.04 AS builder-image
+
+# avoid stuck build due to user prompt
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install --no-install-recommends -y python3.11 python3.11-dev python3.11-venv python3-pip python3-wheel build-essential && \
+	apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# create and activate virtual environment
+# using final folder name to avoid path issues with packages
+RUN python3.11 -m venv /home/myuser/venv
+ENV PATH="/home/myuser/venv/bin:$PATH"
+
+# install requirements
+COPY ../requirements.txt .
+RUN pip3 install --no-cache-dir wheel
+RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir gunicorn
+RUN pip3 install --no-cache-dir gevent
+
+FROM ubuntu:22.04 AS runner-image
+RUN apt-get update && apt-get install --no-install-recommends -y python3.11 python3-venv && \
+	apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# create directory for the app user
+#RUN mkdir -p /home/myuser
+# create the app user
+#RUN addgroup -S myuser && adduser -S myuser -G myuser
+#RUN groupadd -r mygroup && useradd  --create-home myuser -r -g mygroup myuser
+RUN useradd --create-home myuser
+
+ENV HOME=/home/myuser
+ENV APP_HOME=/home/myuser/web
+
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+RUN mkdir $APP_HOME/static
+RUN mkdir $APP_HOME/static/admin
+RUN mkdir $APP_HOME/media
+
+COPY --from=builder-image /home/myuser/venv /home/myuser/venv
+
+# make sure all messages always reach console
+ENV PYTHONUNBUFFERED=1
+
+# activate virtual environment
+ENV VIRTUAL_ENV=/home/myuser/venv
+ENV PATH="/home/myuser/venv/bin:$PATH"
+
+COPY ../. $APP_HOME
+
+RUN chown -R  myuser:myuser $APP_HOME
+
+USER myuser
+
+#NOT FOR THIS AUTOMATION
+#EXPOSE 8000
+
+# /dev/shm is mapped to shared memory and should be used for gunicorn heartbeat
+# this will improve performance and avoid random freezes
+
+#NOT FOR THIS AUTOMATION, WE WILL SET THIS IN DOCKER COMPOSE
+#CMD ["gunicorn","-b", "0.0.0.0:8000", "-w", "4", "-k", "gevent", "--worker-tmp-dir", "/dev/shm", "myinfo.wsgi:application"]

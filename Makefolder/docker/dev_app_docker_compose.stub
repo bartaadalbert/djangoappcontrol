@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+#  stg_{{APP_IMAGE_NAME}}:
+#    image: stg_${APP_IMAGE_NAME}:latest
+#    container_name: stg_${APP_IMAGE_NAME}
+#    hostname: stg_${APP_IMAGE_NAME}
+#    volumes:
+#      - static_volume:${STATIC_FILES}
+#      - media_volume:${MEDIA_FILES}
+#    ports:
+#      - ${PORT_APP_STAGING}
+#    env_file:
+#      - ${DOCKER_APP_ENV_STAGING}
+#    depends_on:
+#     - ${DB_IMAGE_NAME}
+#     - ${REDIS_IMAGE_NAME}
+      
+  {{APP_IMAGE_NAME}}:
+    build:
+      context: .
+      dockerfile: ${APP_DOCKERFILE}
+    image: ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
+    command: ${GUNICORN_COMMAND}
+    container_name: ${APP_IMAGE_NAME}
+    hostname: ${APP_IMAGE_NAME}
+    volumes:
+      - static_volume:${STATIC_FILES}
+      - media_volume:${MEDIA_FILES}
+    ports:
+      - ${PORT_APP}
+    env_file:
+      - ${DOCKER_APP_ENV}
+    depends_on:
+      - ${DB_IMAGE_NAME}
+      - ${REDIS_IMAGE_NAME}
+
+  {{DB_IMAGE_NAME}}:
+    image: postgres:13.0-alpine
+    hostname: ${DB_IMAGE_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    container_name: ${DB_IMAGE_NAME}
+    env_file:
+      - ${DOCKER_DB_ENV}
+    ports:
+      - ${PORT_PSQ}
+
+  {{REDIS_IMAGE_NAME}}:
+    restart: always
+    image: redis:latest
+    ports:
+      - ${PORT_REDIS}
+    volumes:
+      - redisdata:/data
+    container_name: ${REDIS_IMAGE_NAME}
+    hostname: ${REDIS_IMAGE_NAME}
+
+  {{NGINX_IMAGE_NAME}}:
+    build: ${NGINX_DOCKERFILE}
+    image: ${NGINX_IMAGE_NAME}:${APP_IMAGE_TAG}
+    hostname: ${NGINX_IMAGE_NAME}
+    container_name: ${NGINX_IMAGE_NAME}
+    volumes:
+      - static_volume:${STATIC_FILES}
+      - media_volume:${MEDIA_FILES}
+    ports:
+    - ${PORT_NGINX}
+    depends_on:
+      - ${APP_IMAGE_NAME}
+
+volumes:
+  postgres_data:
+  redisdata:
+  static_volume:
+  media_volume:
+
+networks: 
+  default: 
+    external: 
+      name: ${DOCKER_NETWORK}

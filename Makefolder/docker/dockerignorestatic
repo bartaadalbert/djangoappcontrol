@@ -1,0 +1,34 @@
+# Files and directories to ignore when building a Docker image
+# More info: https://docs.docker.com/engine/reference/builder/#dockerignore-file
+
+# Directories
+__pycache__/
+node_modules/
+staticfiles/
+media/
+.build/
+dist/
+uploads/
+logs/
+coverage/
+db.sqlite3
+
+# Files
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.swp
+*.swo
+*.log
+*.cache
+*.json
+*.coverage
+*.pytest_cache
+
+#GIT
+.git
+.gitignore

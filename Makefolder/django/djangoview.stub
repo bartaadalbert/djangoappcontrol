@@ -1,9 +1,29 @@
-from django.http.response import HttpResponse
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET
+import json
 
 
 
 
 
-
+@require_GET
 def index(request):
-    return HttpResponse('OK')
+    return JsonResponse({'message': 'All preparations are complete'})
+
+
+@require_POST
+@csrf_exempt
+def gitwebhook(request):
+    payload = json.loads(request.body)
+    branch = payload['ref'].split('/')[-1]
+
+    if payload['repository']['default_branch'] == branch:
+        # Trigger action for the main branch
+        pass
+    elif branch == 'develop':
+        # Trigger action for the develop branch
+        pass
+
+    return JsonResponse({'status': 'OK'})

@@ -3,7 +3,7 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 
-DEFF_MAKER=${4:-"Makefolder/nginx"}
+DEFF_MAKER=${6:-"Makefolder/nginx"}
 #LINUX
 # SED=$(which sed)
 #MACOS, brew install gnu-sed
@@ -13,8 +13,10 @@ case "$OSTYPE" in
   linux*)   SED=$(which sed) ;;
   *)        echo "unknown: $OSTYPE"; exit 1 ;;
 esac
-PROXYPASS=${2:-"http://127.0.0.1:8888"}
-LISTEN=${3:-80}
+PROXYPASS=${2:-"http://127.0.0.1:8888/"}
+PROXYPASSBACKUP=${3:-"http://127.0.0.1:8899/"}
+APPNAME=${4:-"dj_app"}
+LISTEN=${5:-80}
 
 # check the domain is valid!
 PATTERN="^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$"
@@ -46,9 +48,11 @@ if [[ ! -f $CONFIG ]]; then
     touch $CONFIG
 fi
 
-cp "$PWD/$DEFF_MAKER/subdomain.stub" $CONFIG
+cp "$PWD/$DEFF_MAKER/upstream.stub" $CONFIG
 $SED -i "s/{{SERVERNAME}}/$SERVERNAME/g" $CONFIG
 $SED -i "s/{{PROXYPASS}}/$PROXYPASS/g" $CONFIG
+$SED -i "s/{{PROXYPASSBACKUP}}/$PROXYPASSBACKUP/g" $CONFIG
+$SED -i "s/{{APPNAME}}/$APPNAME/g" $CONFIG
 $SED -i "s/{{LISTEN}}/$LISTEN/g" $CONFIG
 
 printf "$BLUE The nginx conf $CONFIG was created successfully"

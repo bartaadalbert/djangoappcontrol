@@ -25,7 +25,7 @@ SETTINGS_FILE=$2"/$2/settings.py"
 is_app_in_django_settings() {
     # checking that django project settings file exists
     if [ ! -f $SETTINGS_FILE ]; then
-        printf "${RED} Error: The django project settings file $SETTINGS_FILE does not exist"
+        printf "$RED Error: The django project settings file $SETTINGS_FILE does not exist"
         exit 1
     fi
     cat $SETTINGS_FILE | $GREP -Pzo "INSTALLED_APPS\s?=\s?\[[\s\w\.,']*$1[\s\w\.,']*\]\n?" > /dev/null 2>&1
@@ -38,19 +38,19 @@ is_app_in_django_settings() {
 add_app2django_settings() {
     is_app_in_django_settings $1
     if [ $? -ne 0 ]; then
-        echo  "Info. The app '$1' is not in the django project settings file '$SETTINGS_FILE'. Adding." >&2;
+        printf  "Info. The app '$1' is not in the django project settings file '$SETTINGS_FILE'. Adding." >&2;
         $SED -i -e '1h;2,$H;$!d;g' -re "s/(INSTALLED_APPS\s?=\s?\[[\n '._a-zA-Z,]*)/\1    '$1',\n/g" $SETTINGS_FILE
         # checking that app $1 successfully added to django project settings file
         is_app_in_django_settings $1
         if [ $? -ne 0 ]; then
-            echo "Error. Could not add the app '$1' to the django project settings file '$SETTINGS_FILE'. Add it manually, then run this script again." >&2;
+            printf "Error. Could not add the app '$1' to the django project settings file '$SETTINGS_FILE'. Add it manually, then run this script again." >&2;
             exit 1
         else
-            echo "Info. The app '$1' was successfully added to the django settings file '$SETTINGS_FILE'." >&2;
+            printf "Info. The app '$1' was successfully added to the django settings file '$SETTINGS_FILE'." >&2;
             exit 0
         fi
     else
-        printf "${YELLOW} Info. The app '$1' is already in the django project settings file '$SETTINGS_FILE'"
+        printf "$YELLOW Info. The app '$1' is already in the django project settings file '$SETTINGS_FILE'"
     fi
 }
 
