@@ -1,0 +1,13 @@
+Django
+gunicorn
+gevent
+wheel
+requests
+bpython
+flake8
+tox
+psycopg2-binary
+django-redis
+pipreqs
+pytz
+tzdata
