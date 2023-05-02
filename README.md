@@ -44,6 +44,8 @@ Upon completion, your Django app will be dockerized, and you can modify the crea
 
 Enjoy a streamlined and automated development experience with this Makefile project!
 
+Now you can focus on your Python code, while this Makefile takes care of setting up and deploying your project. It automatically configures your Django application with Nginx as a reverse proxy, SSL for secure HTTPS connections, and enables deployment to any server specified in your Makefile settings for development or production environments. This streamlines the process, allowing you to concentrate on writing and improving your application.
+
 
 
 Key Features:
