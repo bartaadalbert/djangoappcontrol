@@ -218,7 +218,7 @@ checker: ## This check the input enabel.
 
 file_check: ## CHECK IF FILE EXISTING in MAIN DEFF_MAKER OR CHANGE THE PATH_TO_FILE VARIABLE
 	@echo $(PATH_TO_FILE)
-	@if [[ ! -f $(PATH_TO_FILE) ]]; then \
+	@if [ ! -f $(PATH_TO_FILE) ]; then \
 		printf $(_DANGER) "FILE NOT EXIST"; \
 		exit 1; \
 	else \
@@ -271,7 +271,7 @@ check_ip: ## Verify if the domain's IP address is accessible
 
 #NGINX DOMAIN CONFIG START
 
-create_nginx:
+create_nginx: ## Create nginx server config with simple reverse proxy or upstream proxy
 	@read -p "Do you want to create a simple nginx config or an upstream config with proxy pass backup? (simple/upstream): " NGINX_TYPE; \
 	if [ "$$NGINX_TYPE" = "simple" ]; then \
 		bash $(SCRIPT_NGINX) $(SUBDOMAIN) "$(PROXY_PASS)"; \
@@ -381,7 +381,7 @@ copy_files: create_directories ## Copy necessary files
 
 
 preconfig: ## Add all needed files
-	@if [[ -d $(APP_NAME) ]]; then \
+	@if [ -d $(APP_NAME) ]; then \
 		make copy_files; \
 		make set_compose; \
 		cp $(DOCKER_CHANGE_COMPOSE_FILE) $(APP_NAME)/$(APP_COMPOSEFILE);\
@@ -417,7 +417,7 @@ just_venv: checker ## Create just venv
 		fi \
 	else \
 		printf $(_DANGER) "NO, app requirements not adding! " ; \
-		if [[ -d $(APP_NAME) ]]; then \
+		if [ -d $(APP_NAME) ]; then \
 			cat $(GITIGNORE_STATIC) >> .gitignore;\
 			make append_gitignore; \
 			printf $(_DANGER) "TRY TO CREATE REQUIREMENTS?" ; \
@@ -447,7 +447,7 @@ create_requirements: ## USE path to project and create requirements txt for your
 	fi
 
 create_django_app: ## Create venv with Django startproject, and delete venv if exist
-	@if [[ ! -d $(APP_NAME) ]]; then\
+	@if [ ! -d $(APP_NAME) ]; then\
 		read -p "Do you want to create the Django app $(APP_NAME) with startapp $(START_APP_NAME)? [y/N]: " answer; \
 		if [ "$$answer" = "y" ] || [ "$$answer" = "Y" ]; then \
 			rm -rf $(VENV); \
@@ -463,7 +463,7 @@ create_django_app: ## Create venv with Django startproject, and delete venv if e
 		echo $(YELLOW)"The app folder $(APP_NAME) exist, nothing to do";\
 	fi
 
-	-@if [[ -d $(APP_NAME)/$(START_APP_NAME) ]]; then \
+	-@if [ -d $(APP_NAME)/$(START_APP_NAME) ]; then \
 		bash $(SCRIPT_DJ_SETTINGS) $(APP_NAME) $(SUBDOMAIN_CSRF) $(REDIS_IMAGE_NAME); \
 		bash $(SCRIPT_DJ_URLS) $(APP_NAME) $(START_APP_NAME); \
 		echo $(YELLOW)"The django settings was changed on app $(APP_NAME)"; \
@@ -523,7 +523,7 @@ add_installed_apps: ## Add in django settings installed apps new app
 	fi
 
 app_settings: ## Change the existed app settings from settings dynamic
-	@if [[ -d $(APP_NAME)/$(START_APP_NAME) ]]; then\
+	@if [ -d $(APP_NAME)/$(START_APP_NAME) ]; then\
 		bash $(SCRIPT_DJ_SETTINGS) $(APP_NAME) $(SUBDOMAIN_CSRF) $(REDIS_IMAGE_NAME);\
 		echo $(YELLOW)"The django settings was changed with $(APP_NAME)";\
 		make add_installed_apps $(APP_NAME) $(START_APP_NAME);\
@@ -541,11 +541,11 @@ delete_app: ## THIS will remove our startproject with all data
 	fi
 
 create_pm2: ## Add pm2 config js to app folder
-	@if [[ ! -d $(APP_NAME) ]]; then\
+	@if [ ! -d $(APP_NAME) ]; then\
 		echo $(RED)"Cant add pm2 config if APP not created before";\
 		exit 1;\
 	fi
-	@if [[ ! -f $(APP_NAME)/$(PM2_CONFIG) ]]; then \
+	@if [ ! -f $(APP_NAME)/$(PM2_CONFIG) ]; then \
 		bash $(SCRIPT_PM2) $(APP_NAME) "$(FINAL_PORT)"; \
 		cp $(CUR_DIR)/$(DEFF_MAKER)pm2/$(PM2_CONFIG) $(APP_NAME); \
 		echo $(BLUE)The config js was created and copied to APP folder; \
@@ -695,8 +695,7 @@ git_push: ##Git add . and commit and push to branch, add tag
 git_tag: ## This will tag our git with actual version 
 	@git checkout $(BRANCH)
 	@echo $(VERSION)
-	$(eval GIT_MESSAGE := $(shell read -p "Do you want to set a custom git message? (Current: $(GIT_MESSAGE)) " custom_message && echo $${custom_message:-$(GIT_MESSAGE)}))
-	@git tag $(VERSION) -m $(GIT_MESSAGE)
+	@git tag $(VERSION)
 	@git push --tags
 
 create_git_secrets: ##This will create our secrets file and secrets for using github actions
@@ -823,7 +822,7 @@ delete_context: ## Delete the context
 create_network: ## CREATE DOCKER NETWORK IF NOT EXIST
 	@docker network ls
 	@echo $(YELLOW)CHECK DOCKER NETWORK AND CREATE IT  WITH NAME $(DOCKER_NETWORK)
-	@if [[ "$(shell docker network ls | grep "${DOCKER_NETWORK}")" == "" ]]; then \
+	@if [ "$(shell docker network ls | grep "${DOCKER_NETWORK}")" == "" ]; then \
 		read -p "Do you want to create a Docker network with name $(DOCKER_NETWORK)? (y/n): " answer; \
 		if [ "$$answer" = "y" ] || [ "$$answer" = "Y" ]; then \
 			docker network create "${DOCKER_NETWORK}"; \
@@ -838,7 +837,7 @@ create_network: ## CREATE DOCKER NETWORK IF NOT EXIST
 delete_network: ## DELETE DOCKER NETWORK BY NAME
 	@docker network ls
 	@echo $(RED)DELETE DOCKER NETWORK WITH NAME $(DOCKER_NETWORK)
-	@if [[ "$(shell docker network ls | grep "${DOCKER_NETWORK}")" != "" ]]; then \
+	@if [ "$(shell docker network ls | grep "${DOCKER_NETWORK}")" != "" ]; then \
 		read -p "Do you want to delete the Docker network with name $(DOCKER_NETWORK)? (y/n): " answer; \
 		if [ "$$answer" = "y" ] || [ "$$answer" = "Y" ]; then \
 			docker network rm $(DOCKER_NETWORK); \
