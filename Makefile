@@ -430,7 +430,7 @@ just_venv: checker ## Create just venv
 			fi \
 		fi \
 	fi
-	@source $(VENV)/bin/activate && python3 -m pip install --upgrade pip && pip install --upgrade -r $(DEF_REQUIREMENTS)
+	. $(VENV)/bin/activate && python3 -m pip install --upgrade pip && pip install --upgrade -r $(DEF_REQUIREMENTS)
 	@echo $(BLUE)"The venv was created with name $(VENV)"
 	@make create_pm2
 	@make create_network
@@ -440,7 +440,7 @@ just_venv: checker ## Create just venv
 
 create_requirements: ## USE path to project and create requirements txt for your python app
 	@if [ -d $(VENV) ]; then \
-		source $(VENV)/bin/activate && pip install pipreqs && pipreqs $(PATH_TO_PROJECT); \
+		. $(VENV)/bin/activate && pip install pipreqs && pipreqs $(PATH_TO_PROJECT); \
 		echo $(BLUE)"The requirements created successfully"; \
 	else \
 		echo $(RED)"The VENV FOLDER NOT EXIST, CANT CREATE REQUIREMENTS"; \
@@ -452,10 +452,10 @@ create_django_app: ## Create venv with Django startproject, and delete venv if e
 		if [ "$$answer" = "y" ] || [ "$$answer" = "Y" ]; then \
 			rm -rf $(VENV); \
 			python3 -m venv $(VENV); \
-			source $(VENV)/bin/activate && python3 -m pip install --upgrade pip && pip install --upgrade -r $(DEF_REQUIREMENTS); \
+			. $(VENV)/bin/activate && python3 -m pip install --upgrade pip && pip install --upgrade -r $(DEF_REQUIREMENTS); \
 			cp $(GITIGNORE_STATIC) .gitignore; \
 			make append_gitignore; \
-			source $(VENV)/bin/activate && django-admin startproject $(APP_NAME) && make create_pm2 && cd $(APP_NAME) && python3 manage.py startapp $(START_APP_NAME);\
+			. $(VENV)/bin/activate && django-admin startproject $(APP_NAME) && make create_pm2 && cd $(APP_NAME) && python3 manage.py startapp $(START_APP_NAME);\
 			cat $(DOCKERIGNORE_STATIC) >> $(PATH_TO_PROJECT)/.dockerignore; \
 			echo $(BLUE)"The app folder $(APP_NAME) created with startapp $(START_APP_NAME) successfully";\
 		fi;\
